@@ -58,6 +58,8 @@ public:
     v3[2] = v1[0]*v2[1] - v1[1]*v2[0];
   }
 
+  bool TestAxisSAT(float* ptsA,float* ptsB, float* axis);
+
   //Updates
   void UpdateVelocity(Body* obj, double &timeStep);
   void UpdateAngularVelocity(Body* obj, double &timeStep);

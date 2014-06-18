@@ -222,89 +222,62 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
     {
       if(a != b)
       {
+          //Get OBB from object 'z' and 'i'
+          //Check for collision
+          //Add velocity and angular forces to object 'i'
           if(CheckCollision(bodies[a], bodies[b]))
              bodies[a]->isActive = false;
-            //Get OBB from object 'z' and 'i'
-            //Check for collision
-            //Add velocity and angular forces to object 'i'
+
       }
     }
   }
-//            //test
-//            glm::mat3 a_axes = glm::mat3_cast(glm::quat(bodies[i].Orientation.x,bodies[i].Orientation.y,bodies[i].Orientation.z,bodies[i].Orientation.w));
-//            glm::mat3 b_axes = glm::mat3_cast(glm::quat(bodies[z].Orientation.x,bodies[z].Orientation.y,bodies[z].Orientation.z,bodies[z].Orientation.w));
-//            glm::vec3 a_oriented_half_size = a_axes * bodies[i].Lengths;
-//            glm::vec3 b_oriented_half_size = b_axes *bodies[z].Lengths;
-//            bool isCollision = true;
-//            glm::vec3 min = glm::vec3(0,0,0);
-//            float min_dist = FLT_MAX;
 
-//            for (int in = 0; in < 3; in++)
-//            {
-//              glm::vec3 axis = a_axes[in];
-//              float ra = std::abs(glm::dot(a_oriented_half_size, axis));
-//              float rb = std::abs(glm::dot(b_oriented_half_size, axis));
-//              float distance2 = glm::length2(glm::dot(bodies[i].Center - bodies[z].Center, axis));
-//              if (distance2 >= glm::length2(ra + rb))
-//              {
-//                isCollision = false;
-//                break;
-//              }
-//              else
-//              {
-//                  if (distance2 < min_dist)
-//                  {
-//                     min_dist = distance2;
-//                     min = bodies[i].Center - bodies[z].Center;
-//                  }
-//              }
-//            }
+  return 0;
+}
 
-//            for (int in = 0; in < 3; in++)
-//            {
-//              glm::vec3 axis = b_axes[in];
-//              float ra = std::abs(glm::dot(a_oriented_half_size, axis));
-//              float rb = std::abs(glm::dot(b_oriented_half_size, axis));
-//              float distance2 = glm::length2(glm::dot(bodies[z].Center - bodies[i].Center, axis));
-//              if (distance2 >= glm::length2(ra + rb))
-//              {
-//                isCollision = false;
-//                break;
-//              }
-//              else
-//              {
-//                  if (distance2 < min_dist)
-//                  {
-//                     min_dist = distance2;
-//                     min = bodies[i].Center - bodies[z].Center;
-//                  }
-//              }
-//            }
+//Old collision detection and velocity change code
 
-//            for (int in = 0; in < 3; in++)
-//            {
-//              for (int j = 0; j < 3; j++)
-//              {
-//                glm::vec3 axis = glm::cross(a_axes[in], b_axes[j]);
-//                float ra = std::abs(glm::dot(a_oriented_half_size, axis));
-//                float rb = std::abs(glm::dot(b_oriented_half_size, axis));
-//                float distance2 = glm::length2(glm::dot(bodies[z].Center - bodies[i].Center, axis));
-//                if (distance2 >= glm::length2(ra + rb) && distance2 != 0.0f)
-//                {
-//                  isCollision = false;
-//                  break;
-//                }
-//                else
-//                {
-//                    if (distance2 < min_dist)
-//                    {
-//                       min_dist = distance2;
-//                       min = bodies[i].Center - bodies[z].Center;
-//                    }
-//                }
-//              }
-//            }
-
+//3 axis of A and 3 axis of B
+//  for (int in = 0; in < 3; in++)
+//  {
+//    float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
+//    float ra = std::abs(CalcDot(lenA, axis));
+//    float rb = std::abs(CalcDot(lenB, axis));
+//    float distance2 = glm::length2(CalcDot(newCentB, axis));
+//    if (distance2 >= glm::length2(ra + rb))
+//    {
+//      return false;
+//    }
+//  }
+//  for (int in = 0; in < 3; in++)
+//  {
+//    float axis[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
+//    float ra = std::abs(CalcDot(lenA, axis));
+//    float rb = std::abs(CalcDot(lenB, axis));
+//    float distance2 = glm::length2(CalcDot(newCentA, axis));
+//    if (distance2 >= glm::length2(ra + rb))
+//    {
+//      return false;
+//    }
+//  }
+//  for (int in = 0; in < 3; in++)
+//  {
+//    for (int j = 0; j < 3; j++)
+//    {
+//      float axisA[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
+//      float axisB[3] = {matB[j*3], matB[j*3+1], matB[j*3+2]};
+//      float axis[3];
+//      CalcCross(axisA, axisB, axis);
+//      float ra = std::abs(CalcDot(orientedLenA, axis));
+//      float rb = std::abs(CalcDot(orientedLenB, axis));
+//      float distance2 = glm::length2(CalcDot(newCentA, axis));
+//      if (distance2 >= glm::length2(ra + rb) && distance2 != 0.0f)
+//      {
+//        return false;
+//      }
+//    }
+//  }
+// COLLISION REBOUND
 //            if(isCollision == true)
 //            {
 //                float elasticity = 0.75;
@@ -316,64 +289,66 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
 
     // handle rotations
     //if(GetLength(bodies[i].AngularVelocity) > 0.0)
-    {
+
 //        glm::vec4 a = glm::vec4(sin(bodies[i].AngularVelocity.x/2.0f), 0, 0, cos(bodies[i].AngularVelocity.x/2.0f));
 //        glm::vec4 b = glm::vec4(0, sin(bodies[i].AngularVelocity.y/2.0f), 0, cos(bodies[i].AngularVelocity.y/2.0f));
 //        glm::vec4 c = glm::vec4(0, 0, sin(bodies[i].AngularVelocity.z/2.0f), cos(bodies[i].AngularVelocity.z/2.0f));
 //        bodies[i].Orientation = QuaternionMul(QuaternionMul(a,b),c);
 //        bodies[i].Orientation = glm::normalize(bodies[i].Orientation);
-    }
-  return 0;
+
+bool Solver::TestAxisSAT(float* ptsA,float* ptsB, float* axis)
+{
+  float* tmpPtA = new float[3]();
+  float* tmpPtB = new float[3]();
+  float minval1 = FLT_MAX;
+  float maxval1 = -FLT_MAX;
+  float minval2 = FLT_MAX;
+  float maxval2 = -FLT_MAX;
+  for( int i = 0 ; i < 8 ; i++ )
+  {
+    tmpPtA[0] = ptsA[i*3];
+    tmpPtA[1] = ptsA[i*3+1];
+    tmpPtA[2] = ptsA[i*3+2];
+    tmpPtB[0] = ptsB[i*3];
+    tmpPtB[1] = ptsB[i*3+1];
+    tmpPtB[2] = ptsB[i*3+2];
+    float dotVal = CalcDot(tmpPtA, axis);
+    if( dotVal < minval1 )  minval1=dotVal;
+    if( dotVal > maxval1 )  maxval1=dotVal;
+    dotVal = CalcDot(tmpPtB, axis);
+    if( dotVal < minval2 )  minval2=dotVal;
+    if( dotVal > maxval2 )  maxval2=dotVal;
+  }
+  delete tmpPtA;
+  delete tmpPtB;
+  if(!((minval2 >= minval1 && minval2 <= maxval1) || (minval1 >= minval2 && minval1 <= maxval2)))
+  {
+    return false;
+  }
+  return true;
 }
 
 bool Solver::CheckCollision(Body *a, Body *b)
 {
-  //float* obbA = a->GetOBB();
-  //float* obbB = b->GetOBB();
-  float* centA = a->GetCenter();
-  float* centB = b->GetCenter();
-  float* lenA = a->GetLengths();
-  float* lenB = b->GetLengths();
-  float newCentA[3] = {centA[0] - centB[0], centA[1] - centB[1], centA[2]- centB[2]};
-  float newCentB[3] = {centB[0] - centA[0], centB[1] - centA[1], centB[2]- centA[2]};
-  float* matA = new float[12]();
+  float* obbA = a->GetOBB();
+  float* obbB = b->GetOBB();
+  float* matA = new float[9]();
   QuatToMat(a->GetOrientation(), matA);
-  float* matB = new float[12]();
+  float* matB = new float[9]();
   QuatToMat(b->GetOrientation(), matB);
 
-  float* orientedLenA = new float[3]();
-  orientedLenA[0] = lenA[0];
-  orientedLenA[1] = lenA[1];
-  orientedLenA[2] = lenA[2];
-  MultMatByVec(orientedLenA, matA);
-  float* orientedLenB = new float[3]();
-  orientedLenB[0] = lenB[0];
-  orientedLenB[1] = lenB[1];
-  orientedLenB[2] = lenB[2];
-  MultMatByVec(orientedLenB, matB);
-
-  // 3 axis of A and 3 axis of B
+  //SAT test for all axes
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    float ra = std::abs(CalcDot(orientedLenA, axis));
-    float rb = std::abs(CalcDot(orientedLenB, axis));
-    float distance2 = glm::length2(CalcDot(newCentA, axis));
-    if (distance2 >= glm::length2(ra + rb))
-    {
+    if (!TestAxisSAT(obbA, obbB, axis))
       return false;
-    }
   }
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-    float ra = std::abs(CalcDot(orientedLenA, axis));
-    float rb = std::abs(CalcDot(orientedLenB, axis));
-    float distance2 = glm::length2(CalcDot(newCentB, axis));
-    if (distance2 >= glm::length2(ra + rb))
-    {
+    if (!TestAxisSAT(obbA, obbB, axis))
       return false;
-    }
   }
   for (int in = 0; in < 3; in++)
   {
@@ -383,21 +358,11 @@ bool Solver::CheckCollision(Body *a, Body *b)
       float axisB[3] = {matB[j*3], matB[j*3+1], matB[j*3+2]};
       float axis[3];
       CalcCross(axisA, axisB, axis);
-      float ra = std::abs(CalcDot(orientedLenA, axis));
-      float rb = std::abs(CalcDot(orientedLenB, axis));
-      float distance2 = glm::length2(CalcDot(newCentB, axis));
-      if (distance2 >= glm::length2(ra + rb) && distance2 != 0.0f)
-      {
+      if (!TestAxisSAT(obbA, obbB, axis))
         return false;
-      }
     }
   }
 
-
-
-
-  delete orientedLenA;
-  delete orientedLenB;
   delete matA;
   delete matB;
   return true;
