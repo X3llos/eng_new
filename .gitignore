@@ -1,0 +1,9 @@
+build/*.txt
+build/Makefile
+build/*.exe
+build/*.cbp
+build/*.cmake
+build/CmakeFiles
+build/CmakeFiles/*
+*user
+

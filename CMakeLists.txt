@@ -9,7 +9,7 @@ add_custom_target(MyProjectSources SOURCES ${${PROJECT_NAME}_BINARY_DIR}/test.cl
 add_custom_target(MyProjectSources2 SOURCES ${${PROJECT_NAME}_BINARY_DIR}/test_SAT.cl)
 #add_custom_target(MyProjectVec3 SOURCES ${${PROJECT_NAME}_SOURCE_DIR}/src/Vec3.h)
 add_custom_target(MyProjectStdafx SOURCES ${${PROJECT_NAME}_SOURCE_DIR}/src/stdafx.h)
-add_custom_target(MyProjectTODO SOURCES ${${PROJECT_NAME}_SOURCE_DIR}/todo.txt)
+#add_custom_target(MyProjectTODO SOURCES ${${PROJECT_NAME}_SOURCE_DIR}/todo.txt)
 link_directories(${${PROJECT_NAME}_SOURCE_DIR}/lib)
 target_link_libraries(${PROJECT_NAME}
     ${${PROJECT_NAME}_SOURCE_DIR}/lib/libglfw3.a
