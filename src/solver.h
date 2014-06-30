@@ -10,18 +10,18 @@ public:
   int Init();
 
   //helpers
-  cl_float4 QuaternionMul(cl_float4 q1, cl_float4 q2);
-  glm::vec4 QuaternionMul(glm::vec4 q1, glm::vec4 q2);
-  cl_float3 QuaternionTransform(cl_float3 p,  cl_float4 q);
-  glm::vec3 QuaternionTransform(glm::vec3 p,  glm::vec4 q);
-  float getDistance(cl_float3 v1, cl_float3 v2);
-  float getDistance(glm::vec3 v1, glm::vec3 v2);
-  cl_float3 Radians(cl_float3 d);
-  glm::vec3 Radians(glm::vec3 d);
-  float GetLength(cl_float3 vec);
-  float GetLength(glm::vec3 vec);
-  float GetLength4(cl_float4 vec);
-  cl_float4 Normalize(cl_float4);
+//  cl_float4 QuaternionMul(cl_float4 q1, cl_float4 q2);
+//  glm::vec4 QuaternionMul(glm::vec4 q1, glm::vec4 q2);
+//  cl_float3 QuaternionTransform(cl_float3 p,  cl_float4 q);
+//  glm::vec3 QuaternionTransform(glm::vec3 p,  glm::vec4 q);
+//  float getDistance(cl_float3 v1, cl_float3 v2);
+//  float getDistance(glm::vec3 v1, glm::vec3 v2);
+//  cl_float3 Radians(cl_float3 d);
+//  glm::vec3 Radians(glm::vec3 d);
+//  float GetLength(cl_float3 vec);
+//  float GetLength(glm::vec3 vec);
+//  float GetLength4(cl_float4 vec);
+//  cl_float4 Normalize(cl_float4);
   static inline void QuatToMat(float* q, float *&mat)
   {
     mat[0] = 1 - 2*q[2]*q[2] - 2*q[3]*q[3];
@@ -58,7 +58,7 @@ public:
     v3[2] = v1[0]*v2[1] - v1[1]*v2[0];
   }
 
-  bool TestAxisSAT(float* ptsA,float* ptsB, float* axis);
+  bool TestAxisSAT(float* ptsA,float* ptsB, float* axis, float &collLen, int &collAxis);
 
   //Updates
   void UpdateVelocity(Body* obj, double &timeStep);
@@ -66,7 +66,7 @@ public:
   int Update(double , Body* points, int, int first);
   int UpdateCPU(double,std::vector<Body*>, int first);
 
-  bool CheckCollision(Body* a, Body* b);
+  bool CheckCollision(Body* a, Body* b, float &collisionLen, int &collisionAxis);
 
   int Close();
 

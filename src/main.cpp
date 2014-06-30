@@ -23,7 +23,7 @@ int main()
     boxes2[i]->isActive = true;
     if(i%2 == 0)
       {
-        boxes2[i]->SetAngularVelocity(0.0f,0.0f,45.0f);
+        boxes2[i]->SetAngularVelocity(0.0f,0.0f,0.0f);
         boxes2[i]->SetCenter(0.0f,i*5.0f,0.0f);
         //boxes2[i]->SetVelocity(100.0f,0.0f,0.0f);
       }

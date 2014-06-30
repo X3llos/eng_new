@@ -83,104 +83,104 @@ int Solver::Update(double delta, Body* points, int boxesSize, int first)
   return 0;
 }
 
-cl_float4 Solver::QuaternionMul(cl_float4 q1, cl_float4 q2)
-{
-  cl_float4 tmp = {q1.s[3]*q2.s[0] + q1.s[0]*q2.s[3] + q1.s[1]*q2.s[2] - q1.s[2]*q2.s[1],
-               q1.s[3]*q2.s[1] + q1.s[1]*q2.s[3] + q1.s[2]*q2.s[0] - q1.s[0]*q2.s[2],
-               q1.s[3]*q2.s[2] + q1.s[2]*q2.s[3] + q1.s[0]*q2.s[1] - q1.s[1]*q2.s[0],
-               q1.s[3]*q2.s[3] - q1.s[0]*q2.s[0] - q1.s[1]*q2.s[1] - q1.s[2]*q2.s[2]};
-  return tmp;
-}
+//cl_float4 Solver::QuaternionMul(cl_float4 q1, cl_float4 q2)
+//{
+//  cl_float4 tmp = {q1.s[3]*q2.s[0] + q1.s[0]*q2.s[3] + q1.s[1]*q2.s[2] - q1.s[2]*q2.s[1],
+//               q1.s[3]*q2.s[1] + q1.s[1]*q2.s[3] + q1.s[2]*q2.s[0] - q1.s[0]*q2.s[2],
+//               q1.s[3]*q2.s[2] + q1.s[2]*q2.s[3] + q1.s[0]*q2.s[1] - q1.s[1]*q2.s[0],
+//               q1.s[3]*q2.s[3] - q1.s[0]*q2.s[0] - q1.s[1]*q2.s[1] - q1.s[2]*q2.s[2]};
+//  return tmp;
+//}
 
-glm::vec4 Solver::QuaternionMul(glm::vec4 q1, glm::vec4 q2)
-{
-  glm::vec4 tmp = glm::vec4(q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y,
-               q1.w*q2.y + q1.y*q2.w + q1.z*q2.x - q1.x*q2.z,
-               q1.w*q2.z + q1.z*q2.w + q1.x*q2.y - q1.y*q2.x,
-               q1.w*q2.w - q1.x*q2.x - q1.y*q2.y - q1.z*q2.z);
-  return tmp;
-}
+//glm::vec4 Solver::QuaternionMul(glm::vec4 q1, glm::vec4 q2)
+//{
+//  glm::vec4 tmp = glm::vec4(q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y,
+//               q1.w*q2.y + q1.y*q2.w + q1.z*q2.x - q1.x*q2.z,
+//               q1.w*q2.z + q1.z*q2.w + q1.x*q2.y - q1.y*q2.x,
+//               q1.w*q2.w - q1.x*q2.x - q1.y*q2.y - q1.z*q2.z);
+//  return tmp;
+//}
 
 
-cl_float3 Solver::QuaternionTransform(cl_float3 p,  cl_float4 q)
-{
-	float xx = q.s[0] * q.s[0], yy = q.s[1] * q.s[1], zz = q.s[2] * q.s[2],
-		xy = q.s[0] * q.s[1], xz = q.s[0] * q.s[2],
-		yz = q.s[1] * q.s[2], wx = q.s[3] * q.s[0],
-		wy = q.s[3] * q.s[1], wz = q.s[3] * q.s[2];
-	cl_float3 tmp = {(1.0f - 2.0f * ( yy + zz )) * p.s[0] + (2.0f * ( xy - wz )) * p.s[1] + (2.0f * ( xz + wy )) * p.s[2],
-			 (2.0f * ( xy + wz )) * p.s[0] + (1.0f - 2.0f * ( xx + zz )) * p.s[1] + (2.0f * ( yz - wx )) * p.s[2],
-			 (2.0f * ( xz - wy )) * p.s[0] + (2.0f * ( yz + wx )) * p.s[1] + (1.0f - 2.0f * ( xx + yy )) * p.s[2]};
-	return tmp;
-}
+//cl_float3 Solver::QuaternionTransform(cl_float3 p,  cl_float4 q)
+//{
+//	float xx = q.s[0] * q.s[0], yy = q.s[1] * q.s[1], zz = q.s[2] * q.s[2],
+//		xy = q.s[0] * q.s[1], xz = q.s[0] * q.s[2],
+//		yz = q.s[1] * q.s[2], wx = q.s[3] * q.s[0],
+//		wy = q.s[3] * q.s[1], wz = q.s[3] * q.s[2];
+//	cl_float3 tmp = {(1.0f - 2.0f * ( yy + zz )) * p.s[0] + (2.0f * ( xy - wz )) * p.s[1] + (2.0f * ( xz + wy )) * p.s[2],
+//			 (2.0f * ( xy + wz )) * p.s[0] + (1.0f - 2.0f * ( xx + zz )) * p.s[1] + (2.0f * ( yz - wx )) * p.s[2],
+//			 (2.0f * ( xz - wy )) * p.s[0] + (2.0f * ( yz + wx )) * p.s[1] + (1.0f - 2.0f * ( xx + yy )) * p.s[2]};
+//	return tmp;
+//}
 
-glm::vec3 Solver::QuaternionTransform(glm::vec3 p,  glm::vec4 q)
-{
-	float xx = q.x * q.w, yy = q.y * q.y, zz = q.z * q.z,
-		xy = q.x * q.y, xz = q.x * q.z,
-		yz = q.y * q.z, wx = q.w * q.x,
-		wy = q.w * q.y, wz = q.w * q.z;
-	glm::vec3 tmp = glm::vec3((1.0f - 2.0f * ( yy + zz )) * p.x + (2.0f * ( xy - wz )) * p.y + (2.0f * ( xz + wy )) * p.z,
-			 (2.0f * ( xy + wz )) * p.x + (1.0f - 2.0f * ( xx + zz )) * p.y + (2.0f * ( yz - wx )) * p.z,
-			 (2.0f * ( xz - wy )) * p.x + (2.0f * ( yz + wx )) * p.y + (1.0f - 2.0f * ( xx + yy )) * p.z);
-	return tmp;
-}
+//glm::vec3 Solver::QuaternionTransform(glm::vec3 p,  glm::vec4 q)
+//{
+//	float xx = q.x * q.w, yy = q.y * q.y, zz = q.z * q.z,
+//		xy = q.x * q.y, xz = q.x * q.z,
+//		yz = q.y * q.z, wx = q.w * q.x,
+//		wy = q.w * q.y, wz = q.w * q.z;
+//	glm::vec3 tmp = glm::vec3((1.0f - 2.0f * ( yy + zz )) * p.x + (2.0f * ( xy - wz )) * p.y + (2.0f * ( xz + wy )) * p.z,
+//			 (2.0f * ( xy + wz )) * p.x + (1.0f - 2.0f * ( xx + zz )) * p.y + (2.0f * ( yz - wx )) * p.z,
+//			 (2.0f * ( xz - wy )) * p.x + (2.0f * ( yz + wx )) * p.y + (1.0f - 2.0f * ( xx + yy )) * p.z);
+//	return tmp;
+//}
 
-float Solver::getDistance(cl_float3 v1, cl_float3 v2)
-{
-	float dx = v2.s[0] - v1.s[0];
-	float dy = v2.s[1] - v1.s[1];
-	float dz = v2.s[2] - v1.s[2];
+//float Solver::getDistance(cl_float3 v1, cl_float3 v2)
+//{
+//	float dx = v2.s[0] - v1.s[0];
+//	float dy = v2.s[1] - v1.s[1];
+//	float dz = v2.s[2] - v1.s[2];
 
-	return std::sqrt(dx * dx + dy * dy + dz * dz);
-}
+//	return std::sqrt(dx * dx + dy * dy + dz * dz);
+//}
 
-float Solver::getDistance(glm::vec3 v1, glm::vec3 v2)
-{
-	float dx = v2.x - v1.x;
-	float dy = v2.y - v1.y;
-	float dz = v2.z - v1.z;
+//float Solver::getDistance(glm::vec3 v1, glm::vec3 v2)
+//{
+//	float dx = v2.x - v1.x;
+//	float dy = v2.y - v1.y;
+//	float dz = v2.z - v1.z;
 
-	return std::sqrt(dx * dx + dy * dy + dz * dz);
-}
+//	return std::sqrt(dx * dx + dy * dy + dz * dz);
+//}
 
-cl_float3 Solver::Radians(cl_float3 d)
-{
-  cl_float3 tmp = {d.s[0] * ONE_DEG_IN_RAD, d.s[1] * ONE_DEG_IN_RAD, d.s[2] * ONE_DEG_IN_RAD};
-  return tmp;
-} 
+//cl_float3 Solver::Radians(cl_float3 d)
+//{
+//  cl_float3 tmp = {d.s[0] * ONE_DEG_IN_RAD, d.s[1] * ONE_DEG_IN_RAD, d.s[2] * ONE_DEG_IN_RAD};
+//  return tmp;
+//}
 
-glm::vec3 Solver::Radians(glm::vec3 d)
-{
-  glm::vec3 tmp = glm::vec3(d.x * ONE_DEG_IN_RAD, d.y * ONE_DEG_IN_RAD, d.z * ONE_DEG_IN_RAD);
-  return tmp;
-}
+//glm::vec3 Solver::Radians(glm::vec3 d)
+//{
+//  glm::vec3 tmp = glm::vec3(d.x * ONE_DEG_IN_RAD, d.y * ONE_DEG_IN_RAD, d.z * ONE_DEG_IN_RAD);
+//  return tmp;
+//}
 
-float Solver::GetLength(cl_float3 vec)
-{
-  return std::sqrt((vec.s[0] * vec.s[0]) + (vec.s[1] * vec.s[1]) + (vec.s[2] * vec.s[2]));
-}
+//float Solver::GetLength(cl_float3 vec)
+//{
+//  return std::sqrt((vec.s[0] * vec.s[0]) + (vec.s[1] * vec.s[1]) + (vec.s[2] * vec.s[2]));
+//}
 
-float Solver::GetLength(glm::vec3 vec)
-{
-  return std::sqrt((vec.x * vec.x) + (vec.y * vec.y) + (vec.z * vec.z));
-}
+//float Solver::GetLength(glm::vec3 vec)
+//{
+//  return std::sqrt((vec.x * vec.x) + (vec.y * vec.y) + (vec.z * vec.z));
+//}
 
-float Solver::GetLength4(cl_float4 vec)
-{
-  return std::sqrt((vec.s[0] * vec.s[0]) + (vec.s[1] * vec.s[1]) + (vec.s[2] * vec.s[2]) + (vec.s[3] * vec.s[3]));
-}
+//float Solver::GetLength4(cl_float4 vec)
+//{
+//  return std::sqrt((vec.s[0] * vec.s[0]) + (vec.s[1] * vec.s[1]) + (vec.s[2] * vec.s[2]) + (vec.s[3] * vec.s[3]));
+//}
 
-cl_float4 Solver::Normalize(cl_float4 vec)
-{
-  float len = GetLength(vec);
-  if(len>0.0)
-    len = 1/len;
-  else
-    len = 1;
-  cl_float4 tmp = {vec.s[0]*len, vec.s[1]*len, vec.s[2]*len, vec.s[3]*len};
-  return tmp;
-}
+//cl_float4 Solver::Normalize(cl_float4 vec)
+//{
+//  float len = GetLength(vec);
+//  if(len>0.0)
+//    len = 1/len;
+//  else
+//    len = 1;
+//  cl_float4 tmp = {vec.s[0]*len, vec.s[1]*len, vec.s[2]*len, vec.s[3]*len};
+//  return tmp;
+//}
 
 
 void Solver::UpdateVelocity(Body* obj, double &timeStep)
@@ -222,12 +222,19 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
     {
       if(a != b)
       {
-          //Get OBB from object 'z' and 'i'
-          //Check for collision
-          //Add velocity and angular forces to object 'i'
-          if(CheckCollision(bodies[a], bodies[b]))
-             bodies[a]->isActive = false;
-
+          float collisionLen = 0;
+          int collisionAxis = -1;
+          if(CheckCollision(bodies[a], bodies[b], collisionLen, collisionAxis))
+            {
+             // UpdateVelocity(bodies[a], timeStep);
+              float* tmpvel = new float[3]();
+              tmpvel = bodies[a]->GetVelocity();
+              tmpvel[0] *=-1;
+              tmpvel[1] *=-1;
+              tmpvel[2] *=-1;
+              bodies[a]->SetVelocity(tmpvel[0], tmpvel[1], tmpvel[2]);
+              //UpdateVelocity(bodies[a], timeStep);
+            }
       }
     }
   }
@@ -235,6 +242,7 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
   return 0;
 }
 
+/*
 //Old collision detection and velocity change code
 
 //3 axis of A and 3 axis of B
@@ -295,8 +303,9 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
 //        glm::vec4 c = glm::vec4(0, 0, sin(bodies[i].AngularVelocity.z/2.0f), cos(bodies[i].AngularVelocity.z/2.0f));
 //        bodies[i].Orientation = QuaternionMul(QuaternionMul(a,b),c);
 //        bodies[i].Orientation = glm::normalize(bodies[i].Orientation);
+*/
 
-bool Solver::TestAxisSAT(float* ptsA,float* ptsB, float* axis)
+bool Solver::TestAxisSAT(float* ptsA,float* ptsB, float* axis, float &collLen, int &collAxis)
 {
   float* tmpPtA = new float[3]();
   float* tmpPtB = new float[3]();
@@ -325,10 +334,11 @@ bool Solver::TestAxisSAT(float* ptsA,float* ptsB, float* axis)
   {
     return false;
   }
+
   return true;
 }
 
-bool Solver::CheckCollision(Body *a, Body *b)
+bool Solver::CheckCollision(Body *a, Body *b, float &collisionLen, int &collisionAxis)
 {
   float* obbA = a->GetOBB();
   float* obbB = b->GetOBB();
@@ -341,13 +351,13 @@ bool Solver::CheckCollision(Body *a, Body *b)
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis))
+    if (!TestAxisSAT(obbA, obbB, axis, collisionLen, collisionAxis))
       return false;
   }
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis))
+    if (!TestAxisSAT(obbA, obbB, axis, collisionLen, collisionAxis))
       return false;
   }
   for (int in = 0; in < 3; in++)
@@ -358,7 +368,7 @@ bool Solver::CheckCollision(Body *a, Body *b)
       float axisB[3] = {matB[j*3], matB[j*3+1], matB[j*3+2]};
       float axis[3];
       CalcCross(axisA, axisB, axis);
-      if (!TestAxisSAT(obbA, obbB, axis))
+      if (!TestAxisSAT(obbA, obbB, axis, collisionLen, collisionAxis))
         return false;
     }
   }
