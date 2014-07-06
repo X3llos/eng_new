@@ -4,7 +4,7 @@
 #define ONE_DEG_IN_RAD (float)(M_PI/180.0) // 0.017444444
 #define WIDTH (640)
 #define HEIGHT (480)
-#define numBoxes 2
+#define numBoxes 4
 
 #define AIRDRAG 0.98
 
