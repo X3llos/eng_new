@@ -25,7 +25,7 @@ int main()
       {
         boxes2[i]->SetAngularVelocity(0.0f,0.0f,0.0f);
         boxes2[i]->SetCenter(0.0f,i*5.0f,0.0f);
-        //boxes2[i]->SetVelocity(100.0f,0.0f,0.0f);
+        boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
       }
     else
         boxes2[i]->SetAngularVelocity(0.0f,0.0f,0.0f);
@@ -49,6 +49,8 @@ int main()
         runned = true;
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))
         runned = false;
+      if (glfwGetKey(Renderer::GetInstance().getWindow(), GLFW_KEY_F))
+        {boxes2[2]->AddForce(2.0f,0.0f,0.0f);boxes2[2]->SetWeight(1.0f);}
       double current_seconds = glfwGetTime();
       double elapsed_seconds = current_seconds - previous_seconds;
       previous_seconds = current_seconds;

@@ -126,18 +126,20 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
           int collisionAxis = -1;
           if(CheckCollision(bodies[a], bodies[b], collisionLen, collisionAxis))
             {
-              bodies[a]->GetCenter();
-             // UpdateVelocity(bodies[a], timeStep);
+              //bodies[a]->GetCenter();
               float* tmpvel = new float[3]();
               tmpvel = bodies[a]->GetCenter();
+
               tmpvel[collisionAxis] += collisionLen;
               tmpvel = bodies[a]->GetVelocity();
-              tmpvel[0] *=-1;
-              tmpvel[1] *=-1;
-              tmpvel[2] *=-1;
+              tmpvel[collisionAxis] *= -1;
+//              tmpvel[0] *=-1;              tmpvel[1] *=-1;             tmpvel[2] *=-1;
               bodies[a]->SetVelocity(tmpvel[0], tmpvel[1], tmpvel[2]);
-              //UpdateVelocity(bodies[a], timeStep);
-              //bodies[a]->isActive = false;
+              // deactivate nearly non-moving objects
+//              if(std::abs(tmpvel[0]) < 0.01 && std::abs(tmpvel[1]) < 0.01 && std::abs(tmpvel[2]) < 0.01)
+//                bodies[a]->isActive = false;
+//              else
+//                bodies[a]->isActive = true;
             }
       }
     }
@@ -279,8 +281,10 @@ bool Solver::CheckCollision(Body *a, Body *b, float &collisionLen, int &collisio
 
   for (int in = 0; in < 3; in++)
   {
-    float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    PenetrationDepthCorrection(obbA, obbB, axis, collisionLen, collisionAxis, in);
+    float axisA[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
+    float axisB[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
+    PenetrationDepthCorrection(obbA, obbB, axisA, collisionLen, collisionAxis, in);
+    PenetrationDepthCorrection(obbA, obbB, axisB, collisionLen, collisionAxis, in);
   }
 
   delete matA;
@@ -315,7 +319,6 @@ void Solver::PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, fl
     if( dotVal > maxval2 )  maxval2=dotVal;
   }
   tmpcollLen = maxval1 > maxval2 ? (maxval2 - minval1) : (maxval1 - minval2);
-
 
   if(std::abs(collLen) > std::abs(tmpcollLen))
   {
