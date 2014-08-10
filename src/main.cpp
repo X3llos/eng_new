@@ -28,7 +28,7 @@ int main()
         boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
       }
     else
-        boxes2[i]->SetAngularVelocity(0.0f,0.0f,0.0f);
+        boxes2[i]->AddAngularForce(0.0f,0.0f,45.0f);
     boxes2[i]->SetWeight(2.0f);
     }
   Renderer::GetInstance().Init();

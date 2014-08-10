@@ -24,6 +24,8 @@ public:
   float* GetVelocity();
   void SetVelocity(float, float, float);
   void AddForce(float, float, float);
+  void AddAngularForce(float, float, float);
+  float* GetAngularForce();
   float* GetOrientation();
   void SetOrientation(float, float, float, float);
   float* GetAngularVelocity();
@@ -43,11 +45,13 @@ public:
   float* GetColor();
 
   bool isActive;
-private:
   BodyType type;
+
+private:
   float center[3];
   float lengths[3];
   float velocity[3];
+  float angularForce[3];
   float angularVelocity[3];
   float weight;
   float color[3];

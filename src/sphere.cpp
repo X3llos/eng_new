@@ -2,9 +2,9 @@
 
 Sphere::Sphere()
 {
+  this->type=tSphere;
 }
 
-int Sphere::draw()
+Sphere::~Sphere()
 {
-  return 0;
 }

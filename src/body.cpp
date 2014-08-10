@@ -2,7 +2,6 @@
 
 Body::Body()
 {
-  type = tBox;
   weight = 1;
   SetLengths(1,1,1);
   SetVelocity(0,0,0);
@@ -44,6 +43,18 @@ void Body::AddForce(float x, float y, float z)
   velocity[2] += z;
 }
 
+void Body::AddAngularForce(float x, float y, float z)
+{
+  angularForce[0] += AngleToRad(x);
+  angularForce[1] += AngleToRad(y);
+  angularForce[2] += AngleToRad(z);
+}
+
+float* Body::GetAngularForce()
+{
+  return angularForce;
+}
+
 float* Body::GetOrientation()
 {
   return orientation;
@@ -64,9 +75,9 @@ float* Body::GetAngularVelocity()
 
 void Body::SetAngularVelocity(float vx, float vy, float vz)
 {
-  angularVelocity[0] = AngleToRad(vx);
-  angularVelocity[1] = AngleToRad(vy);
-  angularVelocity[2] = AngleToRad(vz);
+  angularVelocity[0] = vx;
+  angularVelocity[1] = vy;
+  angularVelocity[2] = vz;
   CalculateOrientation();
 }
 
@@ -114,10 +125,6 @@ void Body::CalculateOrientation()
   float sin_z_2 = sinf(0.5*angularVelocity[2]);
   float sin_y_2 = sinf(0.5*angularVelocity[1]);
   float sin_x_2 = sinf(0.5*angularVelocity[0]);
-
-  //angularVelocity[0] = 0.0f;
-  //angularVelocity[1] = 0.0f;
-  //angularVelocity[2] = 0.0f;
 
   orientation[0] = cos_z_2*cos_y_2*cos_x_2 + sin_z_2*sin_y_2*sin_x_2;
   orientation[1] = cos_z_2*cos_y_2*sin_x_2 - sin_z_2*sin_y_2*cos_x_2;

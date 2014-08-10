@@ -103,7 +103,12 @@ void Solver::UpdateVelocity(Body* obj, double &timeStep)
 
 void Solver::UpdateAngularVelocity(Body* obj, double &timeStep)
 {
-  //TODO
+  float* angVel = obj->GetAngularVelocity();
+  float* angForce = obj->GetAngularForce();
+  angVel[0] += angForce[0]*timeStep;
+  angVel[1] += angForce[1]*timeStep;
+  angVel[2] += angForce[2]*timeStep;
+  obj->SetAngularVelocity(angVel[0],angVel[1],angVel[2]);
 }
 
 int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
@@ -122,25 +127,23 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
     {
       if(a != b)
       {
-          float collisionLen = FLT_MAX;
-          int collisionAxis = -1;
-          if(CheckCollision(bodies[a], bodies[b], collisionLen, collisionAxis))
-            {
-              //bodies[a]->GetCenter();
-              float* tmpvel = new float[3]();
-              tmpvel = bodies[a]->GetCenter();
+        float collisionLen = FLT_MAX;
+        int collisionAxis = -1;
+        if(CheckCollision(bodies[a], bodies[b], collisionLen, collisionAxis))
+        {
+          float* tmpvel = new float[3]();
+          tmpvel = bodies[a]->GetCenter();
 
-              tmpvel[collisionAxis] += collisionLen;
-              tmpvel = bodies[a]->GetVelocity();
-              tmpvel[collisionAxis] *= -1;
-//              tmpvel[0] *=-1;              tmpvel[1] *=-1;             tmpvel[2] *=-1;
-              bodies[a]->SetVelocity(tmpvel[0], tmpvel[1], tmpvel[2]);
-              // deactivate nearly non-moving objects
+          tmpvel[collisionAxis] += collisionLen;
+          tmpvel = bodies[a]->GetVelocity();
+          tmpvel[collisionAxis] *= -1;
+          bodies[a]->SetVelocity(tmpvel[0], tmpvel[1], tmpvel[2]);
+          // deactivate nearly non-moving objects
 //              if(std::abs(tmpvel[0]) < 0.01 && std::abs(tmpvel[1]) < 0.01 && std::abs(tmpvel[2]) < 0.01)
 //                bodies[a]->isActive = false;
 //              else
 //                bodies[a]->isActive = true;
-            }
+        }
       }
     }
   }

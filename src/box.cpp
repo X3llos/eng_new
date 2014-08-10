@@ -11,6 +11,7 @@
 
 Box::Box()
 {
+  this->type=tBox;
 }
 
 Box::~Box()

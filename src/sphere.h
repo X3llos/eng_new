@@ -5,7 +5,7 @@ class Sphere : public Body
 {
 public:
   Sphere();
-  int draw();
+  ~Sphere();
 };
 
 #endif // SPHERE_H
