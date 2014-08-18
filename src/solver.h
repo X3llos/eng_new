@@ -55,6 +55,7 @@ public:
   int UpdateCPU(double,std::vector<Body*>, int first);
 
   bool CheckCollision(Body* a, Body* b, float &collisionLen, int &collisionAxis);
+  void AngularCorrection(Body *a, Body *b, float &collLen, int &collAxis);
   void PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, float &collLen, int &collAxis, int actAxis);
 
   int Close();

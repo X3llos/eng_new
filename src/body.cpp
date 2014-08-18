@@ -5,6 +5,9 @@ Body::Body()
   weight = 1;
   SetLengths(1,1,1);
   SetVelocity(0,0,0);
+  angularForce[0] = 0.0f;
+  angularForce[1] = 0.0f;
+  angularForce[2] = 0.0f;
 }
 
 Body::~Body()

@@ -14,6 +14,11 @@ static inline float AngleToRad(float deg)
   return ONE_DEG_IN_RAD*deg;
 }
 
+static inline float RadToAngle(float deg)
+{
+  return deg/ONE_DEG_IN_RAD;
+}
+
 class Body
 {
 public:

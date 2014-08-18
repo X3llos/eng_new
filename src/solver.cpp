@@ -108,6 +108,9 @@ void Solver::UpdateAngularVelocity(Body* obj, double &timeStep)
   angVel[0] += angForce[0]*timeStep;
   angVel[1] += angForce[1]*timeStep;
   angVel[2] += angForce[2]*timeStep;
+  angVel[0] *= AIRDRAG;
+  angVel[1] *= AIRDRAG;
+  angVel[2] *= AIRDRAG;
   obj->SetAngularVelocity(angVel[0],angVel[1],angVel[2]);
 }
 
@@ -118,7 +121,11 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
     if(bodies[i]->isActive == true && first != 1)
     {
       UpdateVelocity(bodies[i], timeStep);
-      UpdateAngularVelocity(bodies[i], timeStep);
+      float* angForce = bodies[i]->GetAngularForce();
+      if (angForce[0] != 0.0f || angForce[1] != 0.0f || angForce[2] != 0.0f)
+      {
+        UpdateAngularVelocity(bodies[i], timeStep);
+      }
     }
   }
   for(int a=1; a<numBoxes; ++a) // without ground
@@ -259,9 +266,8 @@ bool Solver::CheckCollision(Body *a, Body *b, float &collisionLen, int &collisio
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis))//, collisionLen, collisionAxis))
+    if (!TestAxisSAT(obbA, obbB, axis))
       return false;
-    //PenetrationDepthCorrection(obbA, obbB, axis, collisionLen, collisionAxis, in);
   }
   for (int in = 0; in < 3; in++)
   {
@@ -288,11 +294,23 @@ bool Solver::CheckCollision(Body *a, Body *b, float &collisionLen, int &collisio
     float axisB[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
     PenetrationDepthCorrection(obbA, obbB, axisA, collisionLen, collisionAxis, in);
     PenetrationDepthCorrection(obbA, obbB, axisB, collisionLen, collisionAxis, in);
+    AngularCorrection(a, b, collisionLen, collisionAxis);
   }
 
   delete matA;
   delete matB;
   return true;
+}
+
+void Solver::AngularCorrection(Body *a, Body *b, float &collLen, int &collAxis)
+{
+  //1. obliczyc PRAWIDŁOWY wektor od punktu kolizji do srodka obiektu ( zmienić collLen na wektor gdzie
+  // dla każdej osi będzie przypisywana najmniejsza wartość
+  float vec1[3] = {0.0f,0.0f,0.0f};//a->GetCenter();
+  std::cout<<"LEN: "<<collLen<<std::endl;
+  vec1[collAxis] += collLen;
+  float vec2[3] = {vec1[2],vec1[2],-vec1[0]-vec1[1]};
+  a->AddAngularForce(vec2[0], vec2[1], vec2[2]);
 }
 
 void Solver::PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, float &collLen, int &collAxis, int actAxis)
@@ -322,7 +340,6 @@ void Solver::PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, fl
     if( dotVal > maxval2 )  maxval2=dotVal;
   }
   tmpcollLen = maxval1 > maxval2 ? (maxval2 - minval1) : (maxval1 - minval2);
-
   if(std::abs(collLen) > std::abs(tmpcollLen))
   {
     collLen = tmpcollLen;
