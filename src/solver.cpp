@@ -2,6 +2,7 @@
 
 Solver::Solver()
 {
+  tmppt = new float[3]();
 }
 
 Solver::~Solver()
@@ -105,9 +106,9 @@ void Solver::UpdateAngularVelocity(Body* obj, double &timeStep)
 {
   float* angVel = obj->GetAngularVelocity();
   float* angForce = obj->GetAngularForce();
-  angVel[0] += angForce[0]*timeStep;
-  angVel[1] += angForce[1]*timeStep;
-  angVel[2] += angForce[2]*timeStep;
+  angVel[0] -= angForce[0]*timeStep;
+  angVel[1] -= angForce[1]*timeStep;
+  angVel[2] -= angForce[2]*timeStep;
   angVel[0] *= AIRDRAG;
   angVel[1] *= AIRDRAG;
   angVel[2] *= AIRDRAG;
@@ -220,7 +221,7 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
 //        bodies[i].Orientation = glm::normalize(bodies[i].Orientation);
 */
 
-bool Solver::TestAxisSAT(float* ptsA,float* ptsB, float* axis)// float &collLen, int &collAxis)
+bool Solver::TestAxisSAT(float* ptsA, float* ptsB, float* axis, float &collPoint)// float &collLen, int &collAxis)
 {
   float* tmpPtA = new float[3]();
   float* tmpPtB = new float[3]();
@@ -249,7 +250,7 @@ bool Solver::TestAxisSAT(float* ptsA,float* ptsB, float* axis)// float &collLen,
   {
     return false;
   }
-
+  collPoint = maxval1 + minval1;
   return true;
 }
 
@@ -262,17 +263,21 @@ bool Solver::CheckCollision(Body *a, Body *b, float &collisionLen, int &collisio
   float* matB = new float[9]();
   QuatToMat(b->GetOrientation(), matB);
 
+  float collPoint[3] = {FLT_MAX, FLT_MAX, FLT_MAX};
+  float collPoint2[3] = {FLT_MAX, FLT_MAX, FLT_MAX};
+  float collPoint3[3] = {FLT_MAX, FLT_MAX, FLT_MAX};
+
   //SAT test for all axes
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis))
+    if (!TestAxisSAT(obbA, obbB, axis, collPoint[in]))
       return false;
   }
   for (int in = 0; in < 3; in++)
   {
     float axis[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis))
+    if (!TestAxisSAT(obbA, obbB, axis, collPoint2[in]))
       return false;
   }
   for (int in = 0; in < 3; in++)
@@ -283,47 +288,59 @@ bool Solver::CheckCollision(Body *a, Body *b, float &collisionLen, int &collisio
       float axisB[3] = {matB[j*3], matB[j*3+1], matB[j*3+2]};
       float axis[3];
       CalcCross(axisA, axisB, axis);
-      if (!TestAxisSAT(obbA, obbB, axis))
+      if (!TestAxisSAT(obbA, obbB, axis, collPoint3[in]))
         return false;
     }
   }
-
+  float *t2;
+  float collPoint4[4] = {FLT_MAX, FLT_MAX, FLT_MAX};
   for (int in = 0; in < 3; in++)
   {
     float axisA[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
     float axisB[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-    PenetrationDepthCorrection(obbA, obbB, axisA, collisionLen, collisionAxis, in);
-    PenetrationDepthCorrection(obbA, obbB, axisB, collisionLen, collisionAxis, in);
-    AngularCorrection(a, b, collisionLen, collisionAxis);
+    PenetrationDepthCorrection(obbA, obbB, axisA, collisionLen, collisionAxis, in, collPoint4);
+    t2 = PenetrationDepthCorrection(obbA, obbB, axisB, collisionLen, collisionAxis, in, collPoint4);
   }
+  collPoint4[0] = t2[0];
+  collPoint4[1] = t2[1];
+  collPoint4[2] = t2[2];
+  AngularCorrection(a, b, collPoint4, collisionLen, collisionAxis);
 
   delete matA;
   delete matB;
   return true;
 }
 
-void Solver::AngularCorrection(Body *a, Body *b, float &collLen, int &collAxis)
+void Solver::AngularCorrection(Body *a, Body *b, float* collPoint,float& collLen, int &collAxis)
 {
-  //1. obliczyc PRAWIDŁOWY wektor od punktu kolizji do srodka obiektu ( zmienić collLen na wektor gdzie
-  // dla każdej osi będzie przypisywana najmniejsza wartość
-  float vec1[3] = {0.0f,0.0f,0.0f};//a->GetCenter();
-  std::cout<<"LEN: "<<collLen<<std::endl;
-  vec1[collAxis] += collLen;
-  float vec2[3] = {vec1[2],vec1[2],-vec1[0]-vec1[1]};
-  a->AddAngularForce(vec2[0], vec2[1], vec2[2]);
+  float* vec2 = a->GetCenter();
+  collPoint[collAxis] += collLen;
+  float vec1[3] = {collPoint[0] - vec2[0], collPoint[1] - vec2[1], collPoint[2] - vec2[2]};
+  float vh[3] = {0,0,0};
+  float* angVec = new float[3]();
+  vh[collAxis] = 1;
+  angVec[0] = vec1[1]*vh[2]-vec1[2]*vh[1];
+  angVec[1] = vec1[0]*vh[2]-vec1[2]*vh[0];
+  angVec[2] = vec1[0]*vh[1]-vec1[1]*vh[0];
+  //vec1[axis] *= std::abs((vec2[axis]-collPoint2[axis]))/(vec2[axis]-collPoint2[axis]);
+  //vec1[axis] += (vec2[axis]-collPoint2[axis]);// * axis;
+  //a->AddAngularForce(angVec[2],angVec[2],-(angVec[0])-(angVec[1]));
+  a->AddAngularForce(-angVec[0], -angVec[1], -angVec[2]);
 }
 
-void Solver::PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, float &collLen, int &collAxis, int actAxis)
+float* Solver::PenetrationDepthCorrection(float* ptsA, float* ptsB, float* axis,
+                                        float &collLen, int &collAxis, int actAxis, float *collPoint)
 {
   float* tmpPtA = new float[3]();
   float* tmpPtB = new float[3]();
+  float* tmppt2 = new float[3]();
   float minval1 = FLT_MAX;
   float maxval1 = -FLT_MAX;
   float minval2 = FLT_MAX;
   float maxval2 = -FLT_MAX;
+  tmppt2[0] = FLT_MAX;
 
   float tmpcollLen;
-
   for( int i = 0 ; i < 8 ; i++ )
   {
     tmpPtA[0] = ptsA[i*3];
@@ -332,22 +349,45 @@ void Solver::PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, fl
     tmpPtB[0] = ptsB[i*3];
     tmpPtB[1] = ptsB[i*3+1];
     tmpPtB[2] = ptsB[i*3+2];
+
     float dotVal = CalcDot(tmpPtA, axis);
     if( dotVal < minval1 )  minval1=dotVal;
     if( dotVal > maxval1 )  maxval1=dotVal;
     dotVal = CalcDot(tmpPtB, axis);
     if( dotVal < minval2 )  minval2=dotVal;
     if( dotVal > maxval2 )  maxval2=dotVal;
+
+    if (std::abs(tmpPtA[0]) == std::abs(collLen) || std::abs(tmpPtA[1]) == std::abs(collLen) || std::abs(tmpPtA[2]) == std::abs(collLen))
+    {
+      if (tmppt2[0] == FLT_MAX)
+      {
+        tmppt2[0] = tmpPtA[0];
+        tmppt2[1] = tmpPtA[1];
+        tmppt2[2] = tmpPtA[2];
+      }
+      else
+      {
+        tmppt[0] = tmpPtA[0];
+        tmppt[1] = tmpPtA[1];
+        tmppt[2] = tmpPtA[2];
+      }
+    }
   }
   tmpcollLen = maxval1 > maxval2 ? (maxval2 - minval1) : (maxval1 - minval2);
+  //std::cout<<"val1 "<<minval1<<" "<<maxval1<<" val2 "<<minval2<<" "<<maxval2<<
+  //" ||min1 "<<maxval2 - minval1<<" min2 "<<maxval1 - minval2<<std::endl;
   if(std::abs(collLen) > std::abs(tmpcollLen))
   {
     collLen = tmpcollLen;
     collAxis = actAxis;
   }
+  tmppt[0] = tmppt2[0] != tmppt[0] ? (tmppt2[0] + tmppt[0])/2.0 : tmppt[0];
+  tmppt[1] = tmppt2[1] != tmppt[1] ? (tmppt2[1] + tmppt[1])/2.0 : tmppt[1];
+  tmppt[2] = tmppt2[2] != tmppt[2] ? (tmppt2[2] + tmppt[2])/2.0 : tmppt[2];
   delete tmpPtA;
   delete tmpPtB;
-
+  delete tmppt2;
+  return tmppt;
 }
 
 int Solver::Close()

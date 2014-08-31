@@ -17,7 +17,7 @@ int main()
 
   for(int i=1;i< numBoxes;i++)
     {
-    boxes2[i]->SetCenter(0.0f,i*5.0f,0.0f);
+    boxes2[i]->SetCenter(2.0f,i*5.0f,0.0f);
     boxes2[i]->SetLengths(0.5f,0.5f,0.5f);
     boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
     boxes2[i]->isActive = true;
@@ -30,7 +30,7 @@ int main()
     else
       {
         boxes2[i]->AddAngularForce(0.0f,0.0f,0.0f);
-        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(40.0f));
+        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(22.0f));
       }
     boxes2[i]->SetWeight(2.0f);
     }

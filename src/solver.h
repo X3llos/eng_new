@@ -46,7 +46,7 @@ public:
     v3[2] = v1[0]*v2[1] - v1[1]*v2[0];
   }
 
-  bool TestAxisSAT(float* ptsA,float* ptsB, float* axis);// float &collLen, int &collAxis);
+  bool TestAxisSAT(float* ptsA, float* ptsB, float* axis, float &collPoint);// float &collLen, int &collAxis);
 
   //Updates
   void UpdateVelocity(Body* obj, double &timeStep);
@@ -55,8 +55,9 @@ public:
   int UpdateCPU(double,std::vector<Body*>, int first);
 
   bool CheckCollision(Body* a, Body* b, float &collisionLen, int &collisionAxis);
-  void AngularCorrection(Body *a, Body *b, float &collLen, int &collAxis);
-  void PenetrationDepthCorrection(float* ptsA,float* ptsB, float* axis, float &collLen, int &collAxis, int actAxis);
+  void AngularCorrection(Body *a, Body *b, float* collPoint, float &collLen, int &collAxis);
+  float* PenetrationDepthCorrection(float* ptsA, float* ptsB, float* axis,
+                                  float &collLen, int &collAxis, int actAxis, float *collPoint);
 
   int Close();
 
@@ -69,6 +70,7 @@ public:
 private:
   Solver();
   Solver(const Solver&);
+  float* tmppt;
   cl_device_id device_id;
   cl_context context;
   cl_command_queue command_queue;
