@@ -85,7 +85,8 @@ void Body::SetAngularVelocity(float vx, float vy, float vz)
 }
 
 float* Body::GetAngularVelocityAsDegree()
-{float* deg = new float[3];
+{
+  float* deg = new float[3];
   deg[0] = angularVelocity[0] / ONE_DEG_IN_RAD;
   deg[1] = angularVelocity[1] / ONE_DEG_IN_RAD;
   deg[2] = angularVelocity[2] / ONE_DEG_IN_RAD;

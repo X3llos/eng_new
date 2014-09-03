@@ -17,7 +17,7 @@ int Solver::Init()
   program = NULL;
   kernel = NULL;
   wasText = false;
-  fileName = const_cast<char*>("./test_SAT.cl");
+  fileName = const_cast<char*>("./calcPhys.cl");
   fp = fopen(fileName, "r");
   if (!fp)
   {
@@ -30,56 +30,57 @@ int Solver::Init()
   return 0;
 }
 
-int Solver::Update(double delta, Body* points, int boxesSize, int first)
+int Solver::UpdateGPU(double timeStep, myBody* bodies, int first)
 {
-//  // Get platform and device information
-//  ret = clGetPlatformIDs (1, &platform_id, &ret_num_platforms);
-//  ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
+  // Get platform and device information
+  ret = clGetPlatformIDs (1, &platform_id, &ret_num_platforms);
+  ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
 
-//  // Create OpenCL context
-//  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
+  // Create OpenCL context
+  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
 
-//  // Create Command Queue
-//  command_queue = clCreateCommandQueue(context, device_id, 0, &ret);
+  // Create Command Queue
+  command_queue = clCreateCommandQueue(context, device_id, 0, &ret);
 
-//  // Create Memory Buffer
-//    cl_a = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(myBox)*boxesSize, NULL, &ret);
+  // Create Memory Buffer
+  cl_a = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(Body)*numBoxes, NULL, &ret);
 
-//  // Copy the lists A and B to their respective memory buffers
-//  ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBox)* boxesSize, points, 0, NULL, NULL);
+  // Copy the lists A and B to their respective memory buffers
+  ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(Body)*numBoxes, &bodies, 0, NULL, NULL);
 
-//  // Create Kernel Program from the source
-//  program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
+  // Create Kernel Program from the source
+  program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
 
-//  // Build Kernel Program
-//  ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+  // Build Kernel Program
+  ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
 
-//  // Create OpenCL Kernel
-//  kernel = clCreateKernel(program, "calcPoints", &ret);
+  // Create OpenCL Kernel
+  kernel = clCreateKernel(program, "calcPoints", &ret);
 
-//  // Set OpenCL Kernel Parameters
-//  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&cl_a);
-//  ret = clSetKernelArg(kernel, 1, sizeof(int), &boxesSize);
-//  cl_double d = (cl_double)delta;
-//  ret = clSetKernelArg(kernel, 2, sizeof(cl_double), &d);
+  // Set OpenCL Kernel Parameters
+  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&cl_a);
+  int nb = numBoxes;
+  ret = clSetKernelArg(kernel, 1, sizeof(int), &nb);
+  cl_double d = (cl_double)timeStep;
+  ret = clSetKernelArg(kernel, 2, sizeof(cl_double), &d);
 
-//  ret = clSetKernelArg(kernel, 3, sizeof(cl_bool), &first);
+  ret = clSetKernelArg(kernel, 3, sizeof(cl_bool), &first);
 
 
-//  size_t global_item_size = boxesSize; // Process the entire lists
-//  ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &global_item_size, 0, NULL, NULL);
+  size_t global_item_size = numBoxes; // Process the entire lists
+  ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &global_item_size, 0, NULL, NULL);
 
-//  // Copy results from the memory buffer
-//  ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBox)*boxesSize, points, 0, NULL, NULL);
+  // Copy results from the memory buffer
+  ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(Body)*numBoxes, &bodies, 0, NULL, NULL);
 
-//  // Finalization
-//  ret = clFlush(command_queue);
-//  ret = clFinish(command_queue);
-//  ret = clReleaseKernel(kernel);
-//  ret = clReleaseProgram(program);
-//  ret = clReleaseMemObject(cl_a);
-//  ret = clReleaseCommandQueue(command_queue);
-//  ret = clReleaseContext(context);
+  // Finalization
+  ret = clFlush(command_queue);
+  ret = clFinish(command_queue);
+  ret = clReleaseKernel(kernel);
+  ret = clReleaseProgram(program);
+  ret = clReleaseMemObject(cl_a);
+  ret = clReleaseCommandQueue(command_queue);
+  ret = clReleaseContext(context);
 
   return 0;
 }
@@ -322,9 +323,13 @@ void Solver::AngularCorrection(Body *a, Body *b, float* collPoint,float& collLen
   angVec[0] = vec1[1]*vh[2]-vec1[2]*vh[1];
   angVec[1] = vec1[0]*vh[2]-vec1[2]*vh[0];
   angVec[2] = vec1[0]*vh[1]-vec1[1]*vh[0];
+
   //vec1[axis] *= std::abs((vec2[axis]-collPoint2[axis]))/(vec2[axis]-collPoint2[axis]);
   //vec1[axis] += (vec2[axis]-collPoint2[axis]);// * axis;
   //a->AddAngularForce(angVec[2],angVec[2],-(angVec[0])-(angVec[1]));
+
+  //std::cout<<"vec "<<vec1[0]<<" "<<vec1[1]<<" "<<vec1[2]<<std::endl;
+  //std::cout<<"angVec "<<angVec[0]<<" "<<angVec[1]<<" "<<angVec[2]<<std::endl;
   a->AddAngularForce(-angVec[0], -angVec[1], -angVec[2]);
 }
 
@@ -364,12 +369,14 @@ float* Solver::PenetrationDepthCorrection(float* ptsA, float* ptsB, float* axis,
         tmppt2[0] = tmpPtA[0];
         tmppt2[1] = tmpPtA[1];
         tmppt2[2] = tmpPtA[2];
+        //std::cout<<"tmppt2 "<<tmppt2[0]<<" "<<tmppt2[1]<<" "<<tmppt2[2]<<std::endl;
       }
       else
       {
         tmppt[0] = tmpPtA[0];
         tmppt[1] = tmpPtA[1];
         tmppt[2] = tmpPtA[2];
+        //std::cout<<"tmppt "<<tmppt[0]<<" "<<tmppt[1]<<" "<<tmppt[2]<<std::endl;
       }
     }
   }
@@ -384,6 +391,7 @@ float* Solver::PenetrationDepthCorrection(float* ptsA, float* ptsB, float* axis,
   tmppt[0] = tmppt2[0] != tmppt[0] ? (tmppt2[0] + tmppt[0])/2.0 : tmppt[0];
   tmppt[1] = tmppt2[1] != tmppt[1] ? (tmppt2[1] + tmppt[1])/2.0 : tmppt[1];
   tmppt[2] = tmppt2[2] != tmppt[2] ? (tmppt2[2] + tmppt[2])/2.0 : tmppt[2];
+  //std::cout<<"tmppt out "<<tmppt[0]<<" "<<tmppt[1]<<" "<<tmppt[2]<<std::endl;
   delete tmpPtA;
   delete tmpPtB;
   delete tmppt2;

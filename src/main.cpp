@@ -1,5 +1,68 @@
 #include "stdafx.h"
 
+int main2() //GPU
+{
+  myBody* boxes2 = new myBody[numBoxes]();
+
+  BodyInst::GetInstance().SetCenter(0.0f,0.0f,0.0f,boxes2[0]);
+  BodyInst::GetInstance().SetCenter(0.0f,-10.5f,0.0f,boxes2[0]);
+  BodyInst::GetInstance().SetLengths(10.0f,0.5f,10.0f,boxes2[0]);
+  BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,boxes2[0]);
+  boxes2[0].isActive = true;
+  BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,boxes2[0]);
+
+  for(int i=1;i< numBoxes;i++)
+    {
+    BodyInst::GetInstance().SetCenter(2.0f,i*5.0f,0.0f,boxes2[i]);
+    BodyInst::GetInstance().SetLengths(0.5f,0.5f,0.5f,boxes2[i]);
+    BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,boxes2[i]);
+    boxes2[i].isActive = true;
+    if(i%2 == 0)
+      {
+        BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,boxes2[i]);
+        BodyInst::GetInstance().SetCenter(0.0f,i*5.0f,0.0f,boxes2[i]);
+        BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,boxes2[i]);
+      }
+    else
+      {
+        BodyInst::GetInstance().AddAngularForce(0.0f,0.0f,0.0f,boxes2[i]);
+        BodyInst::GetInstance().SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f),boxes2[i]);
+      }
+    BodyInst::GetInstance().SetWeight(2.0f,boxes2[i]);
+    }
+  Renderer::GetInstance().Init();
+  Solver::GetInstance().Init();
+  double previous_seconds = 0;
+
+  {
+  double current_seconds = glfwGetTime();
+  double elapsed_seconds = current_seconds - previous_seconds;
+  previous_seconds = current_seconds;
+  Solver::GetInstance().UpdateGPU(elapsed_seconds, boxes2, 1);
+  boxes2[0].isActive = false;
+  }
+  bool runned = false;
+  while (!glfwWindowShouldClose (Renderer::GetInstance().getWindow()))
+  {
+      if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_P))
+        runned = true;
+      if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))
+        runned = false;
+      if (glfwGetKey(Renderer::GetInstance().getWindow(), GLFW_KEY_F))
+        {BodyInst::GetInstance().AddForce(2.0f,0.0f,0.0f,boxes2[1]);}
+      double current_seconds = glfwGetTime();
+      double elapsed_seconds = current_seconds - previous_seconds;
+      previous_seconds = current_seconds;
+      if(runned)
+        Solver::GetInstance().UpdateGPU(elapsed_seconds, boxes2, 0);
+      Renderer::GetInstance().UpdateGPU(elapsed_seconds, boxes2);
+  }
+  Renderer::GetInstance().Close();
+  delete boxes2;
+  return 0;
+}
+
+
 int main()
 {
   std::vector<Body*> boxes2;
@@ -30,7 +93,7 @@ int main()
     else
       {
         boxes2[i]->AddAngularForce(0.0f,0.0f,0.0f);
-        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(22.0f));
+        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f));
       }
     boxes2[i]->SetWeight(2.0f);
     }
@@ -53,7 +116,7 @@ int main()
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))
         runned = false;
       if (glfwGetKey(Renderer::GetInstance().getWindow(), GLFW_KEY_F))
-        {boxes2[2]->AddForce(2.0f,0.0f,0.0f);boxes2[2]->SetWeight(1.0f);}
+        {boxes2[1]->AddForce(2.0f,0.0f,0.0f);}
       double current_seconds = glfwGetTime();
       double elapsed_seconds = current_seconds - previous_seconds;
       previous_seconds = current_seconds;

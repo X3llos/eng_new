@@ -195,6 +195,74 @@ int Renderer::Update(double elapsed_seconds,std::vector<Body*> bodies)
   return 0;
 }
 
+int Renderer::UpdateGPU(double elapsed_seconds,myBody* bodies)
+{
+  Camera::GetInstance().Update(elapsed_seconds, window);
+
+  // wipe the drawing surface clear
+  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  int view_mat_location = glGetUniformLocation (shader_programme, "view");
+  glUseProgram (shader_programme);
+  glm::mat4 tmpmat = Camera::GetInstance().getViewMat();
+  glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, glm::value_ptr(tmpmat));
+  int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
+  glUseProgram (shader_programme);
+  glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, Camera::GetInstance().getProjMat());
+  glBindVertexArray (vao);
+
+  for(int i = 0;i<numBoxes;++i)
+  {
+      glEnableClientState( GL_COLOR_ARRAY );
+      glEnableClientState( GL_VERTEX_ARRAY );
+
+      vbo = 0;
+      glGenBuffers (1, &vbo);
+      glBindBuffer (GL_ARRAY_BUFFER, vbo);
+      //glBufferData (GL_ARRAY_BUFFER, sizeof(glm::vec3)*8, cl_float3ToVec3(bodies[i].Points), GL_STATIC_DRAW);
+      BodyInst::GetInstance().GetOBB(bodies[i]);
+      glBufferData (GL_ARRAY_BUFFER, sizeof(float)*24, bodies[i].pts, GL_STATIC_DRAW);
+
+      //color
+      unsigned int colours_vbo = 0;
+      glGenBuffers (1, &colours_vbo);
+      glBindBuffer (GL_ARRAY_BUFFER, colours_vbo);
+      glBufferData (GL_ARRAY_BUFFER, sizeof (glm::vec3)*8,  colors, GL_STATIC_DRAW);
+
+
+      vao = 0;
+      glGenVertexArrays (1, &vao);
+      glBindVertexArray (vao);
+      glBindBuffer (GL_ARRAY_BUFFER, vbo);
+      glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte*)NULL);
+
+      //color
+      glBindBuffer (GL_ARRAY_BUFFER, colours_vbo);
+      glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+      glEnableVertexAttribArray (0);
+      glEnableVertexAttribArray (1);
+
+      //glColorPointer( 3, GL_FLOAT, sizeof(glm::vec3)*8, (*i).getColors() );
+      //glVertexPointer( 3, GL_FLOAT, sizeof(glm::vec3)*8, (*i).getPoints() );
+      glColorPointer( 3, GL_FLOAT_VEC3, 0, colors );
+      //glVertexPointer( 3, GL_FLOAT_VEC3, 0, cl_float3ToVec3(bodies[i].Points));
+      glVertexPointer( 3, GL_FLOAT, 0, bodies[i].pts);
+      glDrawElements( GL_QUADS, 24, GL_UNSIGNED_INT, indices );
+
+      glDisableClientState( GL_COLOR_ARRAY );
+      glDisableClientState( GL_VERTEX_ARRAY );
+  }
+
+  glfwPollEvents ();
+  glfwSwapBuffers (window);
+
+  if(glfwGetKey(window,GLFW_KEY_M))
+    setWireframe(true);
+  if(glfwGetKey(window,GLFW_KEY_N))
+    setWireframe(false);
+  return 0;
+}
+
 int Renderer::Close()
 {
   glfwTerminate();

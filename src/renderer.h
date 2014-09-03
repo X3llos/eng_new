@@ -10,6 +10,7 @@ public:
   int Init(std::vector <Box>*);
   int Init(Body*);
   int Update(double,std::vector<Body*>);
+  int UpdateGPU(double elapsed_seconds,myBody* bodies);
   int Close();
   static Renderer& GetInstance()
   {

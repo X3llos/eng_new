@@ -51,7 +51,7 @@ public:
   //Updates
   void UpdateVelocity(Body* obj, double &timeStep);
   void UpdateAngularVelocity(Body* obj, double &timeStep);
-  int Update(double , Body* points, int, int first);
+  int UpdateGPU(double timeStep, myBody* bodies, int first);
   int UpdateCPU(double,std::vector<Body*>, int first);
 
   bool CheckCollision(Body* a, Body* b, float &collisionLen, int &collisionAxis);

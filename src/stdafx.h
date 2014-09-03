@@ -24,7 +24,9 @@
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
 //#include "tinythread.h"
+
 #include "body.h"
+#include "bodyInst.h"
 #include "box.h"
 #include "sphere.h"
 #include "camera.h"
