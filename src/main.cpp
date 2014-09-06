@@ -1,34 +1,35 @@
 #include "stdafx.h"
 
-int main2() //GPU
+int main() //GPU
 {
-  myBody* boxes2 = new myBody[numBoxes]();
+  myBody boxes2[numBoxes];
+  //myBody* boxes2 = new myBody[numBoxes]();
 
-  BodyInst::GetInstance().SetCenter(0.0f,0.0f,0.0f,boxes2[0]);
-  BodyInst::GetInstance().SetCenter(0.0f,-10.5f,0.0f,boxes2[0]);
-  BodyInst::GetInstance().SetLengths(10.0f,0.5f,10.0f,boxes2[0]);
-  BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,boxes2[0]);
+  BodyInst::GetInstance().SetCenter(0.0f,0.0f,0.0f,&boxes2[0]);
+  BodyInst::GetInstance().SetCenter(0.0f,-10.5f,0.0f,&boxes2[0]);
+  BodyInst::GetInstance().SetLengths(10.0f,0.5f,10.0f,&boxes2[0]);
+  BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[0]);
   boxes2[0].isActive = true;
-  BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,boxes2[0]);
+  BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,&boxes2[0]);
 
   for(int i=1;i< numBoxes;i++)
     {
-    BodyInst::GetInstance().SetCenter(2.0f,i*5.0f,0.0f,boxes2[i]);
-    BodyInst::GetInstance().SetLengths(0.5f,0.5f,0.5f,boxes2[i]);
-    BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,boxes2[i]);
+    BodyInst::GetInstance().SetCenter(2.0f,i*5.0f,0.0f,&boxes2[i]);
+    BodyInst::GetInstance().SetLengths(0.5f,0.5f,0.5f,&boxes2[i]);
+    BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
     boxes2[i].isActive = true;
     if(i%2 == 0)
       {
-        BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,boxes2[i]);
-        BodyInst::GetInstance().SetCenter(0.0f,i*5.0f,0.0f,boxes2[i]);
-        BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,boxes2[i]);
+        BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
+        BodyInst::GetInstance().SetCenter(0.0f,i*5.0f,0.0f,&boxes2[i]);
+        BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
       }
     else
       {
-        BodyInst::GetInstance().AddAngularForce(0.0f,0.0f,0.0f,boxes2[i]);
-        BodyInst::GetInstance().SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f),boxes2[i]);
+        BodyInst::GetInstance().AddAngularForce(0.0f,0.0f,0.0f,&boxes2[i]);
+        BodyInst::GetInstance().SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f),&boxes2[i]);
       }
-    BodyInst::GetInstance().SetWeight(2.0f,boxes2[i]);
+    boxes2[i].weight = 2.0;
     }
   Renderer::GetInstance().Init();
   Solver::GetInstance().Init();
@@ -42,14 +43,26 @@ int main2() //GPU
   boxes2[0].isActive = false;
   }
   bool runned = false;
+
+  double nbFrames = 0;
+  double lastTime = 0.0;
   while (!glfwWindowShouldClose (Renderer::GetInstance().getWindow()))
   {
+      double currentTime = glfwGetTime();
+           nbFrames++;
+           if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1 sec ago
+               // printf and reset timer
+               printf("%f ms/frame\n", 1000.0/double(nbFrames));
+               nbFrames = 0;
+               lastTime += 1.0;
+           }
+
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_P))
         runned = true;
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))
         runned = false;
       if (glfwGetKey(Renderer::GetInstance().getWindow(), GLFW_KEY_F))
-        {BodyInst::GetInstance().AddForce(2.0f,0.0f,0.0f,boxes2[1]);}
+        {BodyInst::GetInstance().AddForce(2.0f,0.0f,0.0f,&boxes2[1]);}
       double current_seconds = glfwGetTime();
       double elapsed_seconds = current_seconds - previous_seconds;
       previous_seconds = current_seconds;
@@ -58,12 +71,12 @@ int main2() //GPU
       Renderer::GetInstance().UpdateGPU(elapsed_seconds, boxes2);
   }
   Renderer::GetInstance().Close();
-  delete boxes2;
+  delete[] boxes2;
   return 0;
 }
 
 
-int main()
+int main2()
 {
   std::vector<Body*> boxes2;
   for(int i=0; i<numBoxes;++i)
@@ -105,7 +118,7 @@ int main()
   double current_seconds = glfwGetTime();
   double elapsed_seconds = current_seconds - previous_seconds;
   previous_seconds = current_seconds;
-  Solver::GetInstance().UpdateCPU(elapsed_seconds, boxes2, 1);
+  //Solver::GetInstance().UpdateCPU(elapsed_seconds, boxes2, 1);
   boxes2[0]->isActive = false;
   }
   bool runned = false;

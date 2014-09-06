@@ -170,63 +170,6 @@ static inline void QuatToMat(float* q, float *&mat)
   mat[8] =  1 - 2*q[1]*q[1] - 2*q[2]*q[2];
 }
 
-bool CheckCollision(myBody *a, myBody *b, float &collisionLen, int &collisionAxis)
-{
-  float* obbA = a->GetOBB();
-  float* obbB = b->GetOBB();
-  float* matA = new float[9]();
-  QuatToMat(a->orientation, matA);
-  float* matB = new float[9]();
-  QuatToMat(b->orientation, matB);
-
-  float collPoint[3] = {FLT_MAX, FLT_MAX, FLT_MAX};
-  float collPoint2[3] = {FLT_MAX, FLT_MAX, FLT_MAX};
-  float collPoint3[3] = {FLT_MAX, FLT_MAX, FLT_MAX};
-
-  //SAT test for all axes
-  for (int in = 0; in < 3; in++)
-  {
-    float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis, collPoint[in]))
-      return false;
-  }
-  for (int in = 0; in < 3; in++)
-  {
-    float axis[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-    if (!TestAxisSAT(obbA, obbB, axis, collPoint2[in]))
-      return false;
-  }
-  for (int in = 0; in < 3; in++)
-  {
-    for (int j = 0; j < 3; j++)
-    {
-      float axisA[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-      float axisB[3] = {matB[j*3], matB[j*3+1], matB[j*3+2]};
-      float axis[3];
-      CalcCross(axisA, axisB, axis);
-      if (!TestAxisSAT(obbA, obbB, axis, collPoint3[in]))
-        return false;
-    }
-  }
-  float *t2;
-  float collPoint4[4] = {FLT_MAX, FLT_MAX, FLT_MAX};
-  for (int in = 0; in < 3; in++)
-  {
-    float axisA[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-    float axisB[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-    PenetrationDepthCorrection(obbA, obbB, axisA, collisionLen, collisionAxis, in, collPoint4);
-    t2 = PenetrationDepthCorrection(obbA, obbB, axisB, collisionLen, collisionAxis, in, collPoint4);
-  }
-  collPoint4[0] = t2[0];
-  collPoint4[1] = t2[1];
-  collPoint4[2] = t2[2];
-  AngularCorrection(a, b, collPoint4, collisionLen, collisionAxis);
-
-  delete matA;
-  delete matB;
-  return true;
-}
-
 float4 QuaternionMul(float4 q1, float4 q2)
 {
   return (float4)( q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y,

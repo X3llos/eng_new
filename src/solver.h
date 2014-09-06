@@ -51,6 +51,7 @@ public:
   //Updates
   void UpdateVelocity(Body* obj, double &timeStep);
   void UpdateAngularVelocity(Body* obj, double &timeStep);
+  void UpdateBodiesGPU(double timeStep, myBody* bodies, int first);
   int UpdateGPU(double timeStep, myBody* bodies, int first);
   int UpdateCPU(double,std::vector<Body*>, int first);
 
@@ -85,6 +86,8 @@ private:
   char *fileName;
   char *source_str;
   size_t source_size;
+  char *source_str2;
+  size_t source_size2;
   cl_mem cl_a;
   //data;
 

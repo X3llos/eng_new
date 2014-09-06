@@ -219,7 +219,7 @@ int Renderer::UpdateGPU(double elapsed_seconds,myBody* bodies)
       glGenBuffers (1, &vbo);
       glBindBuffer (GL_ARRAY_BUFFER, vbo);
       //glBufferData (GL_ARRAY_BUFFER, sizeof(glm::vec3)*8, cl_float3ToVec3(bodies[i].Points), GL_STATIC_DRAW);
-      BodyInst::GetInstance().GetOBB(bodies[i]);
+      BodyInst::GetInstance().GetOBB(&bodies[i]);
       glBufferData (GL_ARRAY_BUFFER, sizeof(float)*24, bodies[i].pts, GL_STATIC_DRAW);
 
       //color

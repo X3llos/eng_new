@@ -41,19 +41,19 @@ public:
     return instance;
   }
   virtual ~BodyInst();
-  void SetCenter(float, float, float, myBody);
-  void SetVelocity(float, float, float, myBody);
-  void AddForce(float, float, float, myBody);
-  void AddAngularForce(float, float, float, myBody);
-  void SetOrientation(float, float, float, float, myBody);
-  void SetAngularVelocity(float, float, float, myBody);
-  float* GetAngularVelocityAsDegree(myBody);
-  void SetLengths(float, float, float, myBody);
-  void SetWeight(float, myBody);
+  void SetCenter(float, float, float, myBody*);
+  void SetVelocity(float, float, float, myBody*);
+  void AddForce(float, float, float, myBody *);
+  void AddAngularForce(float, float, float, myBody*);
+  void SetOrientation(float, float, float, float, myBody*);
+  void SetAngularVelocity(float, float, float, myBody*);
+  float* GetAngularVelocityAsDegree(myBody*);
+  void SetLengths(float, float, float, myBody*);
+  void SetWeight(float, myBody*);
 
-  void GetPoints(myBody);
-  void GetOBB(myBody);
-  void CalculateOrientation(myBody);
+  void GetPoints(myBody*);
+  void GetOBB(myBody*);
+  void CalculateOrientation(myBody*);
   float* QuaternionTransform(float* Point, float* quat);
 
   virtual int draw();
