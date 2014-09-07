@@ -19,8 +19,8 @@
 //  return deg/ONE_DEG_IN_RAD;
 //}
 struct myBody{
-bool isActive;
-BodyType type;
+int isActive;
+unsigned int type;
 float center[3];
 float lengths[3];
 float velocity[3];

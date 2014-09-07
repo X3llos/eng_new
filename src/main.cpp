@@ -3,13 +3,13 @@
 int main() //GPU
 {
   myBody boxes2[numBoxes];
-  //myBody* boxes2 = new myBody[numBoxes]();
 
   BodyInst::GetInstance().SetCenter(0.0f,0.0f,0.0f,&boxes2[0]);
   BodyInst::GetInstance().SetCenter(0.0f,-10.5f,0.0f,&boxes2[0]);
   BodyInst::GetInstance().SetLengths(10.0f,0.5f,10.0f,&boxes2[0]);
   BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[0]);
-  boxes2[0].isActive = true;
+  boxes2[0].isActive = 1;
+  boxes2[0].type = 0;
   BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,&boxes2[0]);
 
   for(int i=1;i< numBoxes;i++)
@@ -17,7 +17,8 @@ int main() //GPU
     BodyInst::GetInstance().SetCenter(2.0f,i*5.0f,0.0f,&boxes2[i]);
     BodyInst::GetInstance().SetLengths(0.5f,0.5f,0.5f,&boxes2[i]);
     BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
-    boxes2[i].isActive = true;
+    boxes2[i].isActive = 1;
+    boxes2[i].type = 0;
     if(i%2 == 0)
       {
         BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
@@ -40,7 +41,7 @@ int main() //GPU
   double elapsed_seconds = current_seconds - previous_seconds;
   previous_seconds = current_seconds;
   Solver::GetInstance().UpdateGPU(elapsed_seconds, boxes2, 1);
-  boxes2[0].isActive = false;
+  boxes2[0].isActive = 0;
   }
   bool runned = false;
 

@@ -36,7 +36,6 @@ void Solver::UpdateBodiesGPU(double timeStep, myBody* bodies, int first)
   // Get platform and device information
   ret = clGetPlatformIDs (1, &platform_id, &ret_num_platforms);
   ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
-  std::cout<<"before "<<bodies[1].center[1]<<std::endl;
   // Create OpenCL context
   context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
 
@@ -47,7 +46,7 @@ void Solver::UpdateBodiesGPU(double timeStep, myBody* bodies, int first)
   cl_a = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(myBody)*numBoxes, NULL, &ret);
 
   // Copy the lists A and B to their respective memory buffers
-  ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBody)*numBoxes, &bodies, 0, NULL, NULL);
+  ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBody)*numBoxes, bodies, 0, NULL, NULL);
 
   // Create Kernel Program from the source
   program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
@@ -59,7 +58,7 @@ void Solver::UpdateBodiesGPU(double timeStep, myBody* bodies, int first)
   kernel = clCreateKernel(program, "updatePoints", &ret);
 
   // Set OpenCL Kernel Parameters
-  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&cl_a);
+  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a);
   int nb = numBoxes;
   ret = clSetKernelArg(kernel, 1, sizeof(cl_int), &nb);
   cl_double d = (cl_double)timeStep;
@@ -70,13 +69,12 @@ void Solver::UpdateBodiesGPU(double timeStep, myBody* bodies, int first)
 
   size_t global_item_size = numBoxes; // Process the entire lists
   ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &global_item_size, 0, NULL, NULL);
-
+  ret = clFinish(command_queue);
   // Copy results from the memory buffer
-  ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBody)*numBoxes, &bodies, 0, NULL, NULL);
-  std::cout<<bodies[1].center[1]<<std::endl;
+  ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBody)*numBoxes, bodies, 0, NULL, NULL);
   // Finalization
   ret = clFlush(command_queue);
-  ret = clFinish(command_queue);
+
   ret = clReleaseKernel(kernel);
   ret = clReleaseProgram(program);
   ret = clReleaseMemObject(cl_a);
@@ -87,57 +85,56 @@ void Solver::UpdateBodiesGPU(double timeStep, myBody* bodies, int first)
 int Solver::UpdateGPU(double timeStep, myBody* bodies, int first)
 {
   UpdateBodiesGPU(timeStep, bodies, first);
-//  // Get platform and device information
-//  ret = clGetPlatformIDs (1, &platform_id, &ret_num_platforms);
-//  ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
 
-//  // Create OpenCL context
-//  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
+  // Get platform and device information
+  ret = clGetPlatformIDs (1, &platform_id, &ret_num_platforms);
+  ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
+  // Create OpenCL context
+  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
 
-//  // Create Command Queue
-//  command_queue = clCreateCommandQueue(context, device_id, 0, &ret);
+  // Create Command Queue
+  command_queue = clCreateCommandQueue(context, device_id, 0, &ret);
 
-//  // Create Memory Buffer
-//  cl_a = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(Body)*numBoxes, NULL, &ret);
+  // Create Memory Buffer
+  cl_a = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(myBody)*numBoxes, NULL, &ret);
 
-//  // Copy the lists A and B to their respective memory buffers
-//  ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(Body)*numBoxes, &bodies, 0, NULL, NULL);
+  // Copy the lists A and B to their respective memory buffers
+  ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBody)*numBoxes, bodies, 0, NULL, NULL);
 
-//  // Create Kernel Program from the source
-//  program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
+  // Create Kernel Program from the source
+  program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
 
-//  // Build Kernel Program
-//  ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+  // Build Kernel Program
+  ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
 
-//  // Create OpenCL Kernel
-//  kernel = clCreateKernel(program, "calcPoints", &ret);
+  // Create OpenCL Kernel
+  kernel = clCreateKernel(program, "calcPoints", &ret);
 
-//  // Set OpenCL Kernel Parameters
-//  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&cl_a);
-//  int nb = numBoxes;
-//  ret = clSetKernelArg(kernel, 1, sizeof(int), &nb);
-//  cl_double d = (cl_double)timeStep;
-//  ret = clSetKernelArg(kernel, 2, sizeof(cl_double), &d);
+  // Set OpenCL Kernel Parameters
+  ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a);
+  int nb = numBoxes;
+  ret = clSetKernelArg(kernel, 1, sizeof(cl_int), &nb);
+  cl_double d = (cl_double)timeStep;
+  ret = clSetKernelArg(kernel, 2, sizeof(cl_double), &d);
 
-//  ret = clSetKernelArg(kernel, 3, sizeof(cl_bool), &first);
+  ret = clSetKernelArg(kernel, 3, sizeof(cl_bool), &first);
 
 
-//  size_t global_item_size = numBoxes; // Process the entire lists
-//  ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &global_item_size, 0, NULL, NULL);
+  size_t global_item_size = numBoxes; // Process the entire lists
+  ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, &global_item_size, 0, NULL, NULL);
+  ret = clFinish(command_queue);
+  // Copy results from the memory buffer
+  ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(myBody)*numBoxes, bodies, 0, NULL, NULL);
+  // Finalization
+  ret = clFlush(command_queue);
 
-//  // Copy results from the memory buffer
-//  ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,sizeof(Body)*numBoxes, &bodies, 0, NULL, NULL);
+  ret = clReleaseKernel(kernel);
+  ret = clReleaseProgram(program);
+  ret = clReleaseMemObject(cl_a);
+  ret = clReleaseCommandQueue(command_queue);
+  ret = clReleaseContext(context);
 
-//  // Finalization
-//  ret = clFlush(command_queue);
-//  ret = clFinish(command_queue);
-//  ret = clReleaseKernel(kernel);
-//  ret = clReleaseProgram(program);
-//  ret = clReleaseMemObject(cl_a);
-//  ret = clReleaseCommandQueue(command_queue);
-//  ret = clReleaseContext(context);
-
-//  return 0;
+  return 0;
 }
 
 void Solver::UpdateVelocity(Body* obj, double &timeStep)
