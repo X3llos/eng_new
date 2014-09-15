@@ -6,4 +6,10 @@ build/*.cmake
 build/CmakeFiles
 build/CmakeFiles/*
 *user
-
+engi_tex/*.aux
+engi_tex/*.toc
+engi_tex/*.lof
+engi_tex/*.log
+engi_tex/*.gz
+engi_tex/*.lot
+engi_tex/*.txt
