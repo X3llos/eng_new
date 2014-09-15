@@ -1,0 +1,93 @@
+\documentclass[12pt, oneside, a4paper]{mwbk}
+\usepackage[UTF8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[OT4]{fontenc}
+
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\usepackage{enumitem}
+\usepackage[noend]{algorithmic}
+\usepackage[ruled]{algorithm}
+
+\usepackage{color}
+\usepackage[normalem]{ulem}
+
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{textpos}
+
+\linespread{1,3}
+\oddsidemargin = 10pt
+\textwidth = 470pt
+
+\hyphenpenalty=1000
+\tolerance=500
+
+\begin{document}
+\author{Łukasz Kowalczyk}
+\title{Technologia OpenCL w symulacji bryły sztywnej}
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{textblock}{1}(-2.65,-1.65)
+\includegraphics{figures/tytulowa_pusta_mgrinz.pdf}
+\end{textblock}
+\vspace{7.3cm}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+\Huge
+Technologia OpenCL w symulacji \\
+dynamiki bryły sztywnej
+\end{center}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+Praca dyplomowa inżynierska
+\end{center}
+\vspace{7.9cm}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+\hspace{-1cm}
+\begin{tabular}{l}
+Wydziaż Fizyki Technicznej, Informatyki i Matematyki Stosowanej \\
+Promotor: dr inż. Dominik Szajerman \\
+Dyplomant: Łukasz Kowalczyk \\
+Nr albumu: 157889
+\end{tabular}
+\end{center}
+\vspace{-.5cm}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+\begin{textblock}{13}(0,0.4)
+Łódź, 2014
+\end{textblock}
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\include{chap01}
+\include{chap02}
+\include{chap03}
+\include{chap04}
+\include{chap05}
+\include{chap06}
+\include{chap07}
+%...
+
+\include{bib}
+
+\listoffigures
+
+\listoftables
+
+\newpage
+\thispagestyle{empty}
+\begin{textblock}{1}(-2.65,-1.65)
+\includegraphics{figures/oswiadczenie_o_samodzielnosci.pdf}
+\end{textblock}
+
+\end{document}
