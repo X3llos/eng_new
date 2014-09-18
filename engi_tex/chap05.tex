@@ -1,4 +1,4 @@
-\chapter{Implementacja systemu kolizji z wykorzystaniem OpenCL}
+\chapter{Wykorzystanie OpenCL w symulacji}
 
 \section{Inicjalizacja OpenCL}
 W części inicjalizującej odczytany zostaje plik kernela. Został on podzielony na cztery głowne sekcje - strukturę obietków, stałe, dodatkowe funkcje oraz samą funkcję kernela.
@@ -11,22 +11,49 @@ Ta część zawiera dane stałe, wykorzystywane przez funkcje pomocnicze. Zdefin
 
 \subsection{Funkcje pomocnicze}
 Dzięki wzorowaniu się na standardzie C99 OpenCL pozwala na wykorzystanie funkcji. Umożliwia to znaczne zwiększenie czytelności oprogramowania oraz szybsze wprowadzenie ewentualnych zmian. W celu przyspieszenia wykonywania kernela argumenty funkcji są przekazywane przez wskaźnik, co niweluje konieczność tworzenia obiektów tymczasowych, a co za tym idzie dodatkowego czasu na alokowanie oraz zwalnianie duzych obszarów pamięci.
-
+\newpage
 \subsection{Kernel}
-Funkcja kernela na samym początku pobiera identyfikator: \\
-unsigned int i \= get\_global\_id(0); \\
-Funkcja ta pobiera globalny identyfukator wątku. W przypadku stworzonej symulacji, operacje dla każdej bryły sztywnej biorącej udział w symulacji wykonywane są na oddzielnym wątku. Dzięki temu, identyfikator określa również daną bryłę, na której wykonujemy operacje. Samo odwołanie do elementów, na któych wykonywane są operacje przypomina odwołanie się do kolejnych elementów w tabeli. \\
-Sam proces inicjalizacyjny ropoczynany jest od pobrania platform. W przypadku użytych urządzeń zostaną wykryte dwie plaftormy: karta NVIDIA GeForce GTX 760 oraz procesor Intel\textregistered Core\texttrademark i5-3570K. \\ Następnie utworzony zostaje kontekst obliczeniowy oraz tworzona jest kolejka zadań. Kolejka służy jako interfejs do wysyłania do urządzenia zadań (tj. kopia danych do/z platformy, wysłanie kernela). \\
-Kolejnym krokiem jest utworzenie obiektu programu, w którym używamy wcześniej stworzonego pliku kernela. Plik przekazywany jest z użyciem typu char*, zatem należy uprzednio wczytać plik do pamięci. \\
-Po wykonaniu tych operacji należy zbudować program, używając stworzonego obiektu programu. Program budowany jest dla określonego urządzenia lub jeśli jako argument została podana wartość NULL, program jest budowany na wszystkich znalezionych urządzeniach. \\
-Po zbudowaniu mozemy stworzyć obiekt kernela z programu. Jako argument podajemy nazwę funkcji z uzytego pliku kernela. Stworzony obiekt kernela będzie można wysłać, po ustaleniu parametrów, za pomocą kolejki zadań do wykonania. \\
-Następnie należy utworzyć zmienne typu cl\_mem, które będą służyły jako bufory wejścia/wyjścia w pamięci urządzenia. Każda zmienna tego typu może zostać oznaczona jako tylko do odczytu (CL\_MEM\_READ\_ONLY), tylko do zapisu (CL\_MEM\_WRITE\_ONLY) oraz z pełnym dostępem ( CL\_MEM\_READ\_WRITE). \\
-Po utworzeniu danych należy przetransferować dane z pamięci hosta do pamięci urządzenia, gdyż kernel nie posiada bezpośredniego dostępu do danych umieszczonych w pamięci hosta. \\
-Jako, że kernel zostanie wysłany do kolejki zadań, należy odpowiednio ustawić parametry będące argumentami dla przesyłanej funkcji kernela. \\
-Gdy wszystkie etapy zostały wykonane, można przesłać obiekt kernela do kolejki zadań. \\
-Następnie należy zaczekać na zakończenie obliczeń przez urządzenie. Jeśli ten krok zostanie pominięty a urządzenie nie skończy wykonywać kodu kernela, nasze dane wyjściowe będą niepełne oraz błędne. \\
-Gdy kernel zakończy prawidłowo pracę, należy przekopiować wynik z pamięci urządzenia do pamięci hosta. \\
-Gdy dane zostaną przekopiowane, należy usunąć zainicjowane wcześniej obiekty OpenCL. \\
+Tutaj zostają umieszczone funkcje, wykonywane w czasie działania aplikacji przez hosta. W przypadku stworzonej aplikacji użyte zostały dwie funkcje - aktualizująca obiekty, oraz sprawdzająca kolizje.
 
-\section{Przekazywanie danych pomiędzy pamięcią RAM a pamięcią GPU}
-Obiekty symulacji przekazywane jako argument do funkcji kernela, które będą uzywane przez wszystkie wątki, należy zaalokować do pamięci globalnej. Używana jest do tego dyrektywa  \begin{verbatim}__global\end{verbatim}. 
+\section{Uruchomienie kernela przez hosta}
+Funkcja kernela na samym początku pobiera identyfikator: \\
+\centering\verb+unsigned int i = get_global_id(0);+\\\flushleft
+Funkcja ta pobiera globalny identyfukator wątku. W przypadku stworzonej symulacji, operacje dla każdej bryły sztywnej biorącej udział w symulacji wykonywane są na oddzielnym wątku. Dzięki temu, identyfikator określa również daną bryłę, na której wykonujemy operacje. Odwoływanie się do elementów, na któych wykonywane są operacje, przypomina odwoływanie się do kolejnych elementów w tabeli. \\
+Sam proces inicjalizacyjny ropoczynany jest od pobrania platform:\\
+\centering\verb+ret = clGetPlatformIDs (1, &platform_id, &ret_num_platforms);+\\
+\verb+ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id,+ \\
+\verb+&ret_num_devices);+\\ \flushleft
+W przypadku użytych urządzeń zostaną wykryte dwie plaftormy: karta NVIDIA GeForce GTX 760 oraz procesor Intel\textregistered Core\texttrademark i5-3570K. \\ 
+Następnie utworzony zostaje kontekst obliczeniowy oraz tworzona jest kolejka zadań:\\
+\centering\verb+context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);+\\
+\verb+command_queue = clCreateCommandQueue(context, device_id, 0, &ret);+\\\flushleft
+Kolejka służy jako interfejs do wysyłania do urządzenia zadań (tj. kopia danych do/z platformy, wysłanie kernela). \\
+Kolejnym krokiem jest utworzenie obiektu programu, w którym używamy wcześniej stworzonego pliku kernela:\\
+\centering\verb+program = clCreateProgramWithSource(context, 1, (const char **)&source_str,+\\
+\verb+(const size_t *)&source_size, &ret);+\\\flushleft
+Plik przekazywany jest z użyciem typu char*, zatem należy uprzednio wczytać plik do pamięci. \\
+Po wykonaniu tych operacji należy zbudować program, używając stworzonego obiektu programu:\\
+\centering\verb+ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);+\\\flushleft
+Program budowany jest dla określonego urządzenia lub jeśli jako argument została podana wartość NULL, program jest budowany na wszystkich znalezionych urządzeniach. \\
+Po zbudowaniu mozemy stworzyć obiekt kernela z programu:\\
+\centering\verb+kernel = clCreateKernel(program, "updatePoints", &ret);+\\\flushleft
+Jako argument podajemy nazwę funkcji z użytego pliku kernela. Stworzony obiekt kernela będzie można wysłać, po ustaleniu parametrów, za pomocą kolejki zadań do wykonania. \\
+Następnie należy utworzyć zmienne typu cl\_mem, które będą służyły jako bufory wejścia/wyjścia w pamięci urządzenia np.:\\
+\centering\verb+cl_a = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(myBody)*numBoxes,+\\
+\verb+NULL, &ret);+\\\flushleft
+Każda zmienna tego typu może zostać oznaczona jako tylko do odczytu (CL\_MEM\_READ\_ONLY), tylko do zapisu (CL\_MEM\_WRITE\_ONLY) oraz z pełnym dostępem ( CL\_MEM\_READ\_WRITE). \\
+Po utworzeniu danych należy przetransferować dane z pamięci hosta do pamięci urządzenia, gdyż kernel nie posiada bezpośredniego dostępu do danych umieszczonych w pamięci hosta. \\
+\centering\verb+ret = clEnqueueWriteBuffer(command_queue, cl_a, CL_TRUE, 0,+\\
+\verb+sizeof(myBody)*numBoxes, bodies, 0, NULL, NULL);+\\\flushleft
+Jako, że kernel zostanie wysłany do kolejki zadań, należy odpowiednio ustawić parametry będące argumentami dla przesyłanej funkcji kernela, np.: \\
+\centering\verb+ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_a);+\\\flushleft
+Gdy wszystkie etapy zostały wykonane, można przesłać obiekt kernela do kolejki zadań: \\
+\centering\verb+ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size,+\\
+\verb+&global_item_size, 0, NULL, NULL);+\\\flushleft
+Następnie należy zaczekać na wykonanie wszystkich obliczeń przez urządzenie:\\
+\centering\verb+ret = clFinish(command_queue);+\\\flushleft
+Jeśli ten krok zostanie pominięty a urządzenie nie skończy wykonywać kodu kernela, nasze dane wyjściowe będą błędne. \\
+Gdy kernel zakończy prawidłowo pracę, należy przekopiować wynik z pamięci urządzenia do pamięci hosta: \\
+\centering\verb+ret = clEnqueueReadBuffer(command_queue, cl_a, CL_TRUE, 0,+\\
+\verb+sizeof(myBody)*numBoxes, bodies, 0, NULL, NULL);+\\\flushleft
+Gdy dane zostaną przekopiowane, należy usunąć zainicjowane wcześniej obiekty OpenCL. \\
