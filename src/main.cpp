@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-int main() //GPU
+int main2() //GPU
 {
   myBody boxes2[numBoxes];
 
@@ -22,8 +22,8 @@ int main() //GPU
     if(i%2 == 0)
       {
         BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
-        BodyInst::GetInstance().SetCenter(0.0f,i*5.0f,0.0f,&boxes2[i]);
-        BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
+        BodyInst::GetInstance().SetCenter(0.0f,i*4.0f,0.0f,&boxes2[i]);
+        BodyInst::GetInstance().SetVelocity(10.0f,0.0f,0.0f,&boxes2[i]);
       }
     else
       {
@@ -77,7 +77,7 @@ int main() //GPU
 }
 
 
-int main2()
+int main()
 {
   std::vector<Body*> boxes2;
   for(int i=0; i<numBoxes;++i)
@@ -94,14 +94,14 @@ int main2()
 
   for(int i=1;i< numBoxes;i++)
     {
-    boxes2[i]->SetCenter(2.0f,i*5.0f,0.0f);
+    boxes2[i]->SetCenter(2.0f,i*2.0f,0.0f);
     boxes2[i]->SetLengths(0.5f,0.5f,0.5f);
     boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
     boxes2[i]->isActive = true;
-    if(i%2 == 0)
+    if(i%3 == 0)
       {
         boxes2[i]->SetAngularVelocity(0.0f,0.0f,0.0f);
-        boxes2[i]->SetCenter(0.0f,i*5.0f,0.0f);
+        boxes2[i]->SetCenter(3.0f,i*2.0f,-3.0f);
         boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
       }
     else
@@ -110,6 +110,22 @@ int main2()
         boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f));
       }
     boxes2[i]->SetWeight(2.0f);
+    }
+  for(int i=1;i< numBoxes;i++)
+    {
+      switch(i%10)
+        {
+        case 0: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 1: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 2: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 3: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 4: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 5: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 6: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 7: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 8: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        case 9: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
+        }
     }
   Renderer::GetInstance().Init();
   Solver::GetInstance().Init();
@@ -123,8 +139,19 @@ int main2()
   boxes2[0]->isActive = false;
   }
   bool runned = false;
+  double nbFrames = 0;
+  double lastTime = 0.0;
   while (!glfwWindowShouldClose (Renderer::GetInstance().getWindow()))
   {
+      double currentTime = glfwGetTime();
+           nbFrames++;
+           if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1 sec ago
+               // printf and reset timer
+               printf("%f ms/frame\n", 1000.0/double(nbFrames));
+               nbFrames = 0;
+               lastTime += 1.0;
+           }
+
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_P))
         runned = true;
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))

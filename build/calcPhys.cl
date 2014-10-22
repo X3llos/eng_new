@@ -384,7 +384,6 @@ __kernel void calcPoints(__global myBody* bodies,unsigned int numBodies, double 
 __kernel void updatePoints(__global myBody* bodies,unsigned int numBodies, double timeStep, int first)
 {
   unsigned int i = get_global_id(0);
-  //bodies[i].type = 30;
   if(bodies[i].isActive == true && first != 1)
   {
     // add gravity and airdrag

@@ -1,10 +1,69 @@
-\chapter{Wyznaczanie momentu kolizji oraz wektora reakcji}
-
-\section{Wstęp}
-Do wyznaczenia momentu kolizji wykorzystany został algorytm SAT opisany w poprzednim rozdziale.
+\chapter{Wyznaczanie momentu kolizji oraz reakcji}
 
 \section{Sprawdzenie kolizji}
+Sam proces symulacji dla każdej ramy czasowej jest podzielony na dwie części. Pierwsza część wykorzystuje zaktualizowane z poprzedniego cyklu dane dla obiektów, tzn. aktualnie działające na obiekt wektory sił i aktualizuje położenie oraz orientację brył. W stworzonej symulacji funkcja aktualizująca przekazuje oprócz danych o bryłach również czas, jaki upłynął od ostatniej aktualizacji (delta time). Dzięki temu atrybutowi możliwe jest prawidłowe obliczenie przemieszczenia obiektu od odstatniej aktualizacji niezależnie od mocy obliczeniowej urządzenia, na którym symulacja jest uruchamiana. Kolejnym etapem jest sprawdzenie obiektów pod kątem kolizji oraz zaktualizowanie wartości wektorów brył. Krok ten jest znacznie bardziej wymagający obliczeniowo, ponieważ każda z brył biorąca udział w symulacji testowana jest przeciw pozostałym bryłom. \\
+Aby przyspieszyć obliczenia, przestrzeń, w której uruchamiana jest symulacja, można podzielić na mniejsze obszary metodą drzewa ósemkowego. Dzięki zastosowaniu tego rozwiązania sprawdzane między ze sobą będą jedynie bryły znajdujące się w tej samej podprzestrzeni. Jeśli obiekt znajdzie się na granicy dwóch lub wiecej podprzestrzeni, zostanie dodany do listy sprawdzanych obiektów w każdym obszarze.\\
+Do wyznaczenia momentu kolizji wykorzystany został algorytm SAT opisany w poprzednim rozdziale. Funkcja sprawdzająca wykonuje przetestowania każdego aktywnego obiektu z pozostałymi obiektami symulacji. Należy zaznaczyć, iż obiekty dla których wartości wektorów są zbliżone do zera, zostają usówane z puli obiektów aktywnych. Dla takich obiektów nie są aktualizowane wartości sił, biorą jedynie udział w sprawdzaniu kolizji z aktywnymi obiektami. W momencie wykrycia kolizji z aktywnym obiektem, czyli poprzez nadanie wektorom sił nowych wartości, obiekt znów staje się aktywny.
+\\Poza binarną odpowiedzią, czy kolizja między bryłami wystąpiła, funkcja wykonuje dodatkowe obliczenia. Do podstawowej wersji algorytmu dodane jest wyznaczenie wektora określającego najmniejszą część wspólną kolidujących ze sobą brył (MTV).
+Korzystając z wektora MTV możliwe jest wyznaczenie wektora rotacji po kolizji brył. Aby to zrobić, należy wyznaczyć  wektor prostopadły do danego. Wyznaczony wektor może zostać uzyty do nadania bryle nowego kierunku oraz prędkości dla ruchu obrotowego. Sama rotacja bryły jest przedstawiona w postaci kwaternionu.\\
 
-\section{Wyznaczenie punktu kolizji}
+\section{Kwaterniony}
+Kwaternion jest rozszerzeniem liczb zespolonych na cztery wymiary i posiada trzy pierwiastki urojone (x,y,z) oraz część rzeczywistą w. Kwaternion możemy zapisać w postaci:\\
+\begin{equation}q = w + xi +yj +zk\end{equation}
+gdzie  $w,x,y,z \in \mathbb{R}$
 
-\section{Obliczenie wektora rotacji}
+W praktyce kwaternion jest strukturą czterech liczb. Aby przedstawić rotacje bryły w tej postaci, należy użyć odpowiedniego algorytmu. Należy podać kąt oraz oś wokół której odbywa się obrót. Procedura wygląda następujaco \footnote{Źródło: http://www.flipcode.com/documents/matrfaq.html\#Q58}: \\
+\begin{centering}
+$Angle := Angle*0.5$f\\
+$S := sin(Angle)$\\
+$Out[x] = Axis[x] * S$ \\
+$Out[y] = Axis[y] * S$ \\
+$Out[z] = Axis[z] * S$ \\
+$Out[w] := cos(Angle)$\\
+\end{centering}
+W podanym powyżej przykładzie, \verb$Angle$ określa kąt a \verb$Axis$ oś obrotu a wynik zapisywany jest w \verb$Out$.\\
+Kwaterniony można mnożyć, dlatego też możliwe jest złożenie obrotów wokół wszystkich osi w jednym kwaternionie. Przykład przemnożenia dwóch kwaternionów: \\
+\begin{centering}
+$Out[x] := q1[w]*q2[x] + q1[x]*q2[w] + q1[y]*q2[z] - q1[z]*q2[y]$\\
+$Out[y] := q1[w]*q2[y] + q1[y]*q2[w] + q1[z]*q2[x] - q1[x]*q2[z]$\\
+$Out[z] := q1[w]*q2[z] + q1[z]*q2[w] + q1[x]*q2[y] - q1[y]*q2[x]$\\
+$Out[w] := q1[w]*q2[w] - q1[x]*q2[x] - q1[y]*q2[y] - q1[z]*q2[z]$\\
+\end{centering}
+Sama procedura wykonania rotacji wymaga przekształcenia kwaternionu na macież 3x3, który przedstawia przykład:\\
+\begin{centering}
+$xx := q[x] * q[x], yy = q[y] * q[y]$\\
+$zz := q[z] * q[z]$\\
+$xy := q[x] * q[y], xz = q.x * q[z]$\\
+$yz := q[y] * q[z], wx = q.w * q[x]$\\
+$wy := q[w] * q[y], wz = q.w * q[z]$\\
+
+$Out[1,1] := 1.0f - 2.0f * ( yy + zz )$\\
+$Out[1,2] := 2.0f * ( xy + wz )$\\
+$Out[1,3] := 2.0f * ( xz - wy )$\\
+  
+$Out[2,1] := 2.0f * ( xy - wz )$\\
+$Out[2,2] := 1.0f - 2.0f * ( xx + zz )$\\
+$Out[2,3] := 2.0f * ( yz + wx )$\\
+  
+$Out[3,1] := 2.0f * ( xz + wy )$\\
+$Out[3,2] := 2.0f * ( yz - wx )$\\
+$Out[3,3] := 1.0f - 2.0f * ( xx + yy )$\\
+\end{centering}
+Możliwe jest uproszczenie powyższej funkcji podając punkt jaki mamy przekształcić, dzięki czemu od razu otrzymamy przekształcony w przestrzeni punkt. Uproszczenie wygląda następująco:\\
+\begin{centering}
+$xx := q[x] * q[x], yy = q[y] * q[y]$\\
+$zz := q[z] * q[z]$\\
+$xy := q[x] * q[y], xz = q[x] * q[z]$\\
+$yz := q[y] * q[z], wx = q[w] * q[x]$\\
+$wy := q[w] * q[y], wz = q[w] * q[z]$\\
+
+$Out[x] := (1.0f - 2.0f * ( yy + zz )) * point.x$\\
+$+ (2.0f * ( xy - wz )) * point.y $\\
+$+ (2.0f * ( xz + wy )) * point.z$\\
+$Out[y] := (2.0f * ( xy + wz )) * point.x$\\
+$+ (1.0f - 2.0f * ( xx + zz )) * point.y$\\
+$+ (2.0f * ( yz - wx )) *point.z$\\
+$Out[z] := (2.0f * ( xz - wy )) * point.x$\\
+$+ (2.0f * ( yz + wx )) * point.y$\\
+$+ (1.0f - 2.0f * ( xx + yy )) * point.z$\\
+\end{centering}

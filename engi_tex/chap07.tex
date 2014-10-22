@@ -1,5 +1,6 @@
 \chapter{Podsumowanie i wnioski}
 
-\section{Podsumowanie}
-
-\section{Wnioski}
+W ninejszej pracy została pokazana symulacja bryły sztywnej z wykorzystaniem technologii OpenCL. Została również przedstawiona przenośność tego rozwiązania inne na plaftormy, takie jak procesory ogólnego zastosowania firmy Intel. Praca pokazuje również, że technologia OpenGL jest wystarczająca do wizualizacji przedstawionej symulacji. 
+Dzięki wykorzystaniu mocy obliczeniowej karty Nvidia, wykorzystanie procesora CPU zostało odciążone. Dzięki możliwości równoległego przetwarzania instrukcji dla obiektów, wyniki obliczeń dla większej liczby obiektów były gotowe niemalże w tym samym czasie.\\
+Niestety konieczność ciągłego przesyłania danych pomiędzy układem GPU a pamięcią RAM jest jednym z głównych powodów spowolnienia czasu wykonania całego cyklu obliczeń a co jest z tym związane, ograniczenie możliwości wykorzystania w pełni mocy układu. Nakład czasu potrzebny na przesłanie większej porcji danych został zredukowany dzięki ograniczeniu przesyłanych danych, pozwalając, by część z nich została obliczona już po stronie GPU oraz poprzez brak konieczności tworzenia dodatkowej tablicy danych na obiekty biorące udział w symulacji. \\
+Wykorzystanie technologii OpenCL zapewnia przenośność oprogramowania, dzięki czemu umożliwia wykorzystanie podanego rozwiązania obliczeń fizycznych również na innych konfiguracjach wspierających odpowiednią wersję technologii. Dzięki temu możliwe jest przyspieszenie wykonania obliczeń korzystając nawet z budżetowych układów GPU dając zadawalające rezultaty.\\

@@ -1,5 +1,37 @@
-\chapter{Porównanie czasu wykonywanych obliczeń przy użyciu GPU oraz CPU}
+\chapter{Wizualizacja symulacji z wykorzystaniem OpenGL}
 
-\section{Podsumowanie}
+\section{Wstęp}
+OpenGL jest biblioteką graficzną przeznaczoną do tworzenia trójwymiarowej grafiki. Pierwsza wersja została opracowana w 1992 przez firmę Silicon Graphics Inc. na potrzeby stacji graficznych IRIS. Technologia zystała jednak popularnośc dopiero po zaimplementowaniu jej do współpracy z systemem z rodziny Microsoft Windows. Następnie jej rozwojem zajęła się organizacja ARB, w której skład wchodzili przedstawiciele firm 3DLabs, Apple, ATI, Dell, IBM, Intel, NVIDIA, SGI oraz Sun \cite{openGL}.\\ Sukces technologii polega na jej implementacji dla wszystkich wiodących systemów operacyjnych, niezależności od platformy sprzętowej ( wraz z wsparciem sterowników dla większości kart graficznych) oraz ogólnie dostępnej specyfikacji. Aktualna wersja OpenGL to 4.4 (wydana 22 lipca 2013 roku). Technologia jest aktywnie wspierana przez Khronos Group.
 
-\section{Wnioski}
+\section{Wykorzystanie biblioteki OpenGL}
+Jest wiele sposobów zrealizowania wizualizacji obrazów trójwymiarowych wykorzystując bibliotekę OpenGL. Najprostsze rozwiazania generują cały obraz w jednej funkcji oraz wykorzystują metody, które powstały jeszcze w wersji 1.2 biblioteki. Na potrzeby pracy zostało jednak wykorzytane rozwiązanie wprowadzone w openGL w wersji 3. Zamiast rysować każdy trójkątosobno w sekwencji glBegin-glEnd, trzecia odsłona OpenGL umożliwia przyspieszenie wykonania renderingu dzięki rysowaniu całej tablicy wierzchołków.\\
+Pierwszą czynnością jest stworzenie bufora danych:\\
+\verb$glGenBuffers(1, &vertexbuffer);$\\
+a następnie należy dowiązać bufor jako bieżący:\\
+\verb$glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);$\\
+Możliwe są cztery niżej opisane typy dowiązania: \\
+\begin{enumerate}
+\item \verb$GL_ARRAY_BUFFER$ - buforowy obiekt tablic wierzchołków. Dane przechowywane w obiektach buforowych tablic wierzchołków są zgodne z formatem używanym w tablicach wierzchołków. Umożliwia to bezpośrednie korzystanie z tablic wierzchołków przy użyciu funkcji: glArrayElement, glDrawArrays, glMultiDrawArrays, glDrawElements, glDrawRangeElements i glMultiDrawElements. Jedyna różnica polega na sposobie dostarczenia danych tablic wierzchołków do funkcji: glVertexPointer, glNormalPointer, glColorPointer, glSecondaryColorPointer, glIndexPointer, glEdgeFlagPointer, glFogCoordPointer i glTexCoordPointer. Zamiast wskaźnika na dane tablicy (parametr pointer powyższych funkcji) należy podać położenie początku danych w bieżącym obiekcie buforowym tablicy wierzchołków. W praktyce jeden obiekt buforowy tablic wierzchołków może być zatem strukturą służącą do przechowywania danych wielu tablic wierzchołków.
+\item \verb$GL_ELEMENT_ARRAY_BUFFER$ - buforowy obiekt indeksowych tablic wierzchołków. Obiekty buforowe indeksowych tablic wierzchołków są bezpośrednio przystosowane do współpracy z funkcjami: glDrawElements, glDrawRangeElements i glMultiDrawElements obsługującymi indeksowe tablice wierzchołków. Jedyna różnica polega na sposobie dostarczenia danych tablicy indeksów. Zamiast wskaźnika na dane tablicy z indeksami (parametr indices dwóch pierwszych funkcji) podaje się położenie początku danych w bieżącym obiekcie buforowym indeksowej tablicy wierzchołków. W przypadku funkcji glMultiDrawElements parametr indices zawiera adresy położenia danych kolejnych tablic indeksów w bieżącym obiekcie buforowym.
+\item \verb$GL_PIXEL_UNPACK_BUFFER$ - buforowy obiekt odczytu danych pikseli. Obiekty buforowe odczytu danych pikseli można wykorzystać jako źródło danych pikseli dla następujących funkcji biblioteki OpenGL: glBitmap, glColorSubTable, glColorTable, glCompressedTexImage1D, glCompressedTexImage2D, glCompressedTexImage3D, glCompressedTexSubImage1D, glCompressedTexSubImage2D, glCompressedTexSubImage3D, glConvolutionFilter1D, glConvolutionFilter2D, glDrawPixels, glPixelMapfv, glPixelMapuiv, glPixelMapusv, glPolygonStipple, glSeparableFilter2D, glTexImage1D, glTexImage2D, glTexImage3D, glTexSubImage1D, glTexSubImage2D i glTexSubImage3D.
+W parametrach powyższych funkcji wskazujących źródło danych pikseli zamiast adresu tablicy z danymi wskazujemy położenie danych w obiekcie buforowym.
+\item \verb$GL_PIXEL_PACK_BUFFER$ - buforowy obiekt zapisu danych pikseli. Obiekty buforowe zapisu danych pikseli można wykorzystać jako bufor danych pikseli dla następujących funkcji biblioteki OpenGL: glGetCompressedTexImage, glGetConvolutionFilter, glGetHistogram, glGetMinmax, glGetPixelMapfv, glGetPixelMapuiv, glGetPixelMapusv, glGetPolygonStipple, glGetSeparableFilter, glGetTexImage i glReadPixels.
+W parametrach powyższych funkcji wskazujących tablicę na dane pikseli zamiast adresu tablicy na dane wskazujemy położenie danych w obiekcie buforowym.
+\end{enumerate}
+Następnie należy uzupełnić bufor: \\
+\verb$glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),$
+\verb$g_vertex_buffer_data, GL_STATIC_DRAW);$
+Ostatni parametr informuje OpenGL, że dane z buforu będą pobrane raz lub będą pobierane sporadycznie, jednak będą służyły wielokrotnie do zapisu do obiektu OpenGL. Parametr ten jest jedynie sugestią pomagajacą w optymalizacji. Pozostałymi możliwymi wartościami parametru są:
+\begin{itemize}
+\item \verb$GL_STREAM_DRAW$ - jednokrotne lub sporadyczne pobieranie danych i przeważnie wykorzystanie ich do zapisu do obiektu OpenGL,
+\item \verb$GL_STREAM_READ$ - jednokrotne lub sporadyczne pobieranie danych i przeważnie wykorzystanie ich do odczytu z obiektu OpenGL,
+\item \verb$GL_STREAM_COPY$ - jednokrotne lub sporadyczne pobieranie danych i przeważnie wykorzystanie ich zarówno do odczytu z obiektu OpenGL jak i do zapisu
+\item \verb$GL_STATIC_READ$ - jednokrotne lub sporadyczne pobieranie danych i wielokrotne ich wykorzystanie do odczytu z obiektu OpenGL,
+\item \verb$GL_STATIC_COPY$ - jednokrotne lub sporadyczne pobieranie danych i wielokrotne wykorzystanie ich zarówno do odczytu z obiektu OpenGL jak i do zapisu,
+\item \verb$GL_DYNAMIC_DRAW$ - wielokrotne pobieranie danych i wielokrotne ich wykorzystanie do zapisu do obiektu OpenGL,
+\item \verb$GL_DYNAMIC_READ$ - wielokrotne pobieranie danych i wielokrotne ich wykorzystanie do odczytu z obiektu OpenGL,
+\item \verb$GL_DYNAMIC_COPY$ - wielokrotne pobieranie danych i wielokrotne wykorzystanie ich zarówno do odczytu jak i zapisu obiektu OpenGL.
+\end{itemize}
+Po uzupełnieniu buforu możliwe jest przesłanie informacji o sposobie rysowania samych elementów, korzystając z metody \verb$glDrawArrays(GLenum mode, GLint first, GLsizei count)$. Pierwszy atrybut informuje o rodzaju rysowanych prymitywów. Przyjmuje on takie same wartości jak funkcja glBegin, czyli \verb$GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES,$
+\verb$GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES,$
+\verb$GL_QUAD_STRIP, GL_QUADS oraz GL_POLYGON$). Kolejny parametr określa pierszy element z tablicy wierzchołków, który ma być wykorzystany do renderingu. Ostatni atrybut przekazuje informację o początkowym indeksie wierzchołka a trzeci o liczbie renderowanych prymitywów. W przypadku stworzonej aplikacji dla typu \verb$Box$ użyty został typ \verb$GL_QUADS$ a w trzecim argumencie funkcji wpisana została wartość 24, ponieważ dla każdej z ścian sześcianu musimy podać cztery wierzchołki, aby poprawnie wyrenderować jedną ścianę bryły.

@@ -4,9 +4,9 @@
 #define ONE_DEG_IN_RAD (float)(M_PI/180.0) // 0.017444444
 #define WIDTH (640)
 #define HEIGHT (480)
-#define numBoxes 2
+#define numBoxes 80
 
-#define AIRDRAG 0.98
+#define AIRDRAG 0.99
 
 #include <iostream>
 #include <stdlib.h>
@@ -28,7 +28,7 @@
 #include "body.h"
 #include "bodyInst.h"
 #include "box.h"
-#include "sphere.h"
+//#include "sphere.h"
 #include "camera.h"
 #include "solver.h"
 #include "renderer.h"

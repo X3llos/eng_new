@@ -1,0 +1,32 @@
+\chapter{Dynamika bryły sztywnej}
+\section{Bryła sztywna}
+Bryła sztywna inaczej ciało sztywne jest to obiekt, w którym poszczególne punkty (np. cząsteczki) pozostają w stałych odległościach od siebie. Ciało sztywne nie zmienia swojego kształtu oraz posiada stałą gęstość.\\
+Opisując dynamikę bryły sztywnej należy zwrócić uwagę na dwa rodzaje ruchu.
+\subsection{Ruch postępowy}
+Każdy odcinek łączący dwa dowolne punkty ciała bryły będzie równoległy do odcinka łączącego te same dwa punkty, ale w poprzednim położeniu. Wszystkie punkty bryły poruszają się w danym momencie z jednakową prędkością liniową a podczas ruchu jednostajnie zmiennego będą miały również takie samo przyspieszenie. Dlatego też ruch postępowy dla bryły sztywnej jest identyczny jak dla ruchu punktu materialnego
+\subsection{Ruch obrotowy}
+Wszystkie punkty bryły sztywnej, za wyjątkiem tych leżących na osi obrotu, poruszają się po okręgach o promieniu równym \verb$r$, równych odległości punktów od osi obrotu. Prędkość kątowa bryły będzie wynosić\begin{equation}\omega=\frac{v_i}{r_i}\end{equation}
+gdzie \verb$v$ to prędkość liniowa. Zatem energię kinetyczną ciała można obliczyć z zależności:
+\begin{equation}E_i=\frac{1}{2}mr^2\omega^2\end{equation}
+Całkowita energia kinetyczna bryły w tym ruchu jest równa sumie energii kinetycznych jej poszczególnych punktów. Z definicji bryły sztywnej wynika, że w tym ruchu wszystkie punkty będą miały taka samą prędkość kątową . Tak więc całkowitą energię kinetyczną bryły można przedstawić w postaci wzoru:
+\begin{equation}E_c=\frac{1}{2}(\sum m_i r_i^2)\omega^2\end{equation}
+Iloczyny \begin{equation}m_i r_i\end{equation} pochodzą od poszczególnych punktów ciała. Sumę tych iloczynów nazywa się momentem bezwładności \verb$I$ bryły sztywnej względem osi obrotu.
+\begin{equation}I=\sum_i^n m_i r_i^2\end{equation}
+Moment bezwładności bryły zależy nie tylko od osi obrotu, ale także od kształtu i rozkładu gęstości ciała, wyrażanej w $kg * {m}^{3}$
+W zależności od rodzaju bryły, moment bezwładności występuje pod inną postacią. Dla sześcianu wynosi ona $I=\frac{ms^2}{6}$, gdzie \verb$m$ oznacza masę a \verb$s$ długość krawędzi. Dla kuli będzie to wartość $I=\frac{2mr^2}{5}$ gdzie \verb$m$ oznacza masę a \verb$r$ promień kuli\cite{wiki2}.
+
+Jeżeli bryła sztywna wykonuje ruch obrotowy z przyspieszeniem kątowym, to dzieje się tak pod wpływem przyłożonej siły. Jeżeli siła F działa na punkt materialny bryły sztywnej to jej działanie automatycznie przenosi się na całą bryłę. Mówi się nie o samej sile, ale o tzw. momencie siły. Można go obliczyć ze wzoru:
+\begin{equation}\tau=rF\sin\alpha\end{equation}
+gdzie r jest odległością punktu przyłożenia siły od osi obrotu, a kąt alfa zawarty jest między prostą łączącą punkt przyłożenia siły z osią obrotu i wektorem siły F.\\
+Zarówno dla ruchu postępowego jak i ruchu obrotowego obowiązują zasady dynamiki Newtona.
+\section{Zasady dynamiki Newtona}
+\subsection{I zasada dynamiki}
+,,W inercjalnym układzie odniesienia, jeśli na ciało nie działa żadna siła lub siły działające równoważą się, to ciało pozostaje w spoczynku lub porusza się ruchem jednostajnym prostoliniowym.''\cite{wiki3}\\ 
+W odniesieniu do ruchu obrotowego pierwsza zasada dotyczy sytuacji kiedy bryła sztywna nie porusza się lub ma stałą prędkość kątową. Wtedy to wypadkowy moment sił względem danej osi obrotu, działających na ciało jest równy zero.
+\subsection{II zasada dynamiki}
+,,Jeśli siły działające na ciało nie równoważą się (czyli wypadkowa sił $\vec{F}_{w}$ jest różna od zera), to ciało porusza się z przyspieszeniem wprost proporcjonalnym do siły wypadkowej, a odwrotnie proporcjonalnym do masy ciała.''\cite{wiki3}\\
+Powyższą zasadę można wyrazić wzorem
+\begin{equation}\vec{a}=\frac{\vec{F_w}}{m}\end{equation}
+gdzie $F_w$ oznacza wypadkową sił. Kierunek i zwrot przyspieszenia jest zgodny z kierunkiem i zwrotem siły. 
+Stosując drugą zasadę dynamiki do ruchu obrotowego można wywnioskować, że jeśli bryła sztywna poddana jest działaniu stałego momentu sił to porusza się ona z przyspieszeniem kątowym wprost proporcjonalnym do tego momentu sił co do wartości i odwrotnie proporcjonalnym do momentu bezwładności.
+

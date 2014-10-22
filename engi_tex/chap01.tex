@@ -2,9 +2,20 @@
 \label{t:int}
 
 \section{Wstęp}
+Początki obliczeń z wykorzystaniem akceleracji układów GPU związane są z przetwarzaniem potokowym oraz obliczeniami równoległymi. Jedne z pierwszych superkomputerów umożliwiały zdecydowanie zwiększoną wydajność dla zadań, które były podzielone na operacje powtarzalne. Pierwszy układ GPU został wprowadzony na rynek dzięki firmie Nvidia w 1999 roku \cite{nvidia}. Wtedy też rozpoczętko wykorzystywać te układy do obliczeń ogólnego przeznaczenia. \\
+W roku 2001, wraz z wprowadzeniem programowalnego potoku renderingu oraz wsparcia dla obliczeń liczb zmiennoprzecinkowych, zaczęto wykorzystywać układy GPU do obliczeń niezwiązanych z grafiką. Pierwsze wersje shaderów były dość ograniczone ( np. dla Vertex Shadera 1.1 możliwe było użycie jedynie 128 instrukcji). Kolejne wersje znacznie zwiększały swoje możliwości ( 512 instrukcji dla Shader Model 3.0 oraz do 64 000 instrukcji dla Shader Model w wersji 4.0) \cite{wiki1}. \\
+Zainteresowanie możliwościami obliczeniowymi kolejnych układów było duże, dlatego też w listopadzie 2006 roku Nvidia opracowała technologię CUDA. Pozwala ona na wykorzystanie mocy obliczeniowej procesorów GPU do rozwiązywania problemów numerycznych zdecydowanie wydajniej, niż wykonałby je procesor ogólnego zastosowania. Niestety tachnologia ta może być wykorzystana jedynie z kartami firmy Nvidia. W 2009 roku opracowany został przez firmę Apple Inc. otwarty framework OpenCL, który podobnie jak CUDA pozwala wykorzystać procesory graficzne do wykonania obliczeń, jednak w przeciwieństwie do technologii firmy Nvidia, OpenCL współpracuje z układami graficznymi wszystkich wiodących producentów a ponadto umożliwia uruchomienie zapisanych w nim kerneli na procesorach ogólnego przeznaczenia. \\
+Wykorzystanie układów GPU znalazło zastosowanie w wielu dziedzinach, zaczynając od wsparcia naukowców przy tworzeniu nowych leków, poprzez obliczanie symulacji ruchu ciał niebieskich, przyspieszenia obliczeń związanych z kryptografią, aż po wykorzystanie w grach komputerowych do obliczań zwiazanych z fizyką (symulacje zachowań cieczy, efekty cząsteczkowe czy też wsparcie w obliczaniu kolizji).
 
 \section{Cel}
+Celem pracy jest stworzenie symulacji bryły sztywnej wykorzystując otwarty framework OpenCL do akceleracji obliczeń, a zatem do przemieszczania obiektów, znajdowania kolizji z innymi obiektami oraz reagowania na zderzenia. Praca zakłada również implementację komunikacji części bazowej programu z układem GPU oraz implementację uproszczonego wyświetlenia symulowanych brył przy użyciu technologii OpenGL.
 
 \section{Założenia}
+Praca zakłada wykorzystanie technologii OpenCL w wersji 1.2 do wykonania obliczeń fizycznych. Użycie technologii OpenGL w wersji 3.1 do wyświetlania efektów działania aplikacji zostanie wsparte dodatkową biblioteką glfw w wersji 3 \cite{GLFW}. Część bazowa programu umożliwiająca wykorzystanie OpenCL oraz OpenGL została napisana w języku C++. Do tworzenia samego projektu posłużyło środowisko IDE QTCreator 1.8.4 a do zarządzenia procesem kompilacji narzędzie Cmake w wersji 2.8. \\
+Symulacja brył odbywa się w przestrzeni posiadającej grawitację ziemską przybliżoną do wartości 9.81 $m \over s_2$ oraz podłoże posiadające wagę zbliżoną do nieskończoności (m = $\infty$), na które nie działa siła grawitacji.
 
 \section{Zakres pracy}
+Pierwszy rozdział pracy dotoczy technologii OpenCL. Zostanie w nim omówiona architektura oraz ogólna zasada działania. Przedstawiony zostanie również sprzęt użyty do tworzonego oprogramowania.\\
+Kolejny rozdział dotyczy technologii OpenGL. Przedstawione zostaną wstępne informacje o tej technologii, przedstawiony rozwój wraz z nowymi jej wersjami oraz omówione wykorzystanie technologii w projekcie.\\
+Następny rozdział zawiera omówienie algorytmu sprawdzającego kolizję. Omówiony zostanie algorytm sprawdzania zderzeń między obiektami symulacji, zastosowane rozszerzenie podstawowej wersji algorytmu oraz problemy, które towarzyszą wykorzystaniu tej metody testowania kolizji.\\
+Ostatni rozdział przedstawia konkretne zastosowanie technologii OpenCL przy obliczeniach związanych z symulacją.

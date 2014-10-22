@@ -141,7 +141,7 @@ void Solver::UpdateVelocity(Body* obj, double &timeStep)
 {
   // add gravity and airdrag
   float* vel = obj->GetVelocity();
-  vel[1] += obj->GetWeight()*(-9.81)*timeStep; // added gravity
+  vel[1] += obj->GetWeight()*(-9.81)*timeStep*0.1; // added gravity
 
 
   // Set new velocity
@@ -165,7 +165,7 @@ void Solver::UpdateAngularVelocity(Body* obj, double &timeStep)
   angVel[0] *= AIRDRAG;
   angVel[1] *= AIRDRAG;
   angVel[2] *= AIRDRAG;
-  obj->SetAngularVelocity(angVel[0],angVel[1],angVel[2]);
+  obj->SetAngularVelocity(angVel[0]*timeStep,angVel[1]*timeStep,angVel[2]*timeStep);
 }
 
 int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
@@ -211,70 +211,7 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
   return 0;
 }
 
-/*
-//Old collision detection and velocity change code
-
-//3 axis of A and 3 axis of B
-//  for (int in = 0; in < 3; in++)
-//  {
-//    float axis[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-//    float ra = std::abs(CalcDot(lenA, axis));
-//    float rb = std::abs(CalcDot(lenB, axis));
-//    float distance2 = glm::length2(CalcDot(newCentB, axis));
-//    if (distance2 >= glm::length2(ra + rb))
-//    {
-//      return false;
-//    }
-//  }
-//  for (int in = 0; in < 3; in++)
-//  {
-//    float axis[3] = {matB[in*3], matB[in*3+1], matB[in*3+2]};
-//    float ra = std::abs(CalcDot(lenA, axis));
-//    float rb = std::abs(CalcDot(lenB, axis));
-//    float distance2 = glm::length2(CalcDot(newCentA, axis));
-//    if (distance2 >= glm::length2(ra + rb))
-//    {
-//      return false;
-//    }
-//  }
-//  for (int in = 0; in < 3; in++)
-//  {
-//    for (int j = 0; j < 3; j++)
-//    {
-//      float axisA[3] = {matA[in*3], matA[in*3+1], matA[in*3+2]};
-//      float axisB[3] = {matB[j*3], matB[j*3+1], matB[j*3+2]};
-//      float axis[3];
-//      CalcCross(axisA, axisB, axis);
-//      float ra = std::abs(CalcDot(orientedLenA, axis));
-//      float rb = std::abs(CalcDot(orientedLenB, axis));
-//      float distance2 = glm::length2(CalcDot(newCentA, axis));
-//      if (distance2 >= glm::length2(ra + rb) && distance2 != 0.0f)
-//      {
-//        return false;
-//      }
-//    }
-//  }
-// COLLISION REBOUND
-//            if(isCollision == true)
-//            {
-//                float elasticity = 0.75;
-//                bodies[i].Center.y -= bodies[i].Weight*(-9.81)*1*timeStep;
-//                bodies[i].Velocity *= (-elasticity);
-//                std::cout<<i<<" with "<<z<<std::endl;
-//              //bodies[i].isActive = false;
-//            }
-
-    // handle rotations
-    //if(GetLength(bodies[i].AngularVelocity) > 0.0)
-
-//        glm::vec4 a = glm::vec4(sin(bodies[i].AngularVelocity.x/2.0f), 0, 0, cos(bodies[i].AngularVelocity.x/2.0f));
-//        glm::vec4 b = glm::vec4(0, sin(bodies[i].AngularVelocity.y/2.0f), 0, cos(bodies[i].AngularVelocity.y/2.0f));
-//        glm::vec4 c = glm::vec4(0, 0, sin(bodies[i].AngularVelocity.z/2.0f), cos(bodies[i].AngularVelocity.z/2.0f));
-//        bodies[i].Orientation = QuaternionMul(QuaternionMul(a,b),c);
-//        bodies[i].Orientation = glm::normalize(bodies[i].Orientation);
-*/
-
-bool Solver::TestAxisSAT(float* ptsA, float* ptsB, float* axis, float &collPoint)// float &collLen, int &collAxis)
+bool Solver::TestAxisSAT(float* ptsA, float* ptsB, float* axis, float &collPoint)
 {
   float* tmpPtA = new float[3]();
   float* tmpPtB = new float[3]();
