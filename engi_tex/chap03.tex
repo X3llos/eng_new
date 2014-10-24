@@ -8,12 +8,12 @@ Ogólna zasada działania Separating Axis Theorem polega na sprawdzeniu, czy ist
 Ważnym zagadnieniem podczas omawiania działania algorytmu SAT są projekcje. Ideę projekcji można przedstawić jako cień rzucany przez obiekt na płaszczyznę, gdy światło skierowane jest prostopadle do płaszczyzny a obiekt znajduje się pomiędzy źródłem światła a płaszczyzną.
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{figures/projection.png}
+\includegraphics[width=0.4\textwidth]{figures/projection.png}
 \caption{Projekcja na płaszczyznę (opracowanie własne).}%
 \label{rys:Projekcja na plaszczyzne}
 \end{figure}
 \newpage
-Omówiona w wstępie rozdziału idea algorytmu w praktyce wykorzystuje projekcje i przedstawia się następująco: jeśli dwa wielokąty wypukłe nie kolidują ze sobą to istnieje conajmniej jedna oś, dla której projekcje obiektów nie zachodzą na siebie.
+Omówiona w wstępie rozdziału idea algorytmu w praktyce wykorzystuje projekcje i~przedstawia się następująco: jeśli dwa wielokąty wypukłe nie kolidują ze sobą to istnieje co~najmniej jedna oś, dla której projekcje obiektów nie zachodzą na siebie.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.5\textwidth]{figures/projection2.png}
@@ -22,12 +22,18 @@ Omówiona w wstępie rozdziału idea algorytmu w praktyce wykorzystuje projekcje
 \end{figure}
 
 \section{Algorytm SAT}
-Algorytm wykonuje sprawdzenie nałożenia projekcji obiektów na osie dopóki nie trafi na pierwszą oś, dla której projekcje nie zachodzą na siebie. Jeśli nie znajdzie takiej osi, zwraca informację o przecinaniu się obiektów. W przeciwnym wypadku dostajemy informacje, że obiekty nie kolidują. \\
+Algorytm wykonuje sprawdzenie nałożenia projekcji obiektów na osie dopóki nie trafi na~pierwszą oś, dla której projekcje nie zachodzą na siebie. Jeśli nie znajdzie takiej osi, zwraca informację o przecinaniu się obiektów. W przeciwnym wypadku dostajemy informacje, że~obiekty nie kolidują. \\
 Aby stwierdzić czy projekcje na danej osi się nakładają, należy sprawdzić czy początkowy punkt pierwszego obiektu znajduje się blizej początku osi niż początkowy punkt drugiego sprawdzanego obiektu. Jeśli tak, to następnie wykonujemy sprawdzenie, czy najdalej wysunięty w prawo punkt pierwszego obiektu jest położony dalej niż poczatkowy punkt drugiego obiektu. Jeśli tak jest, oznacza to, iż dla tej osi zachodzi kolizja obiektów. Gdy początek pierwszego obiektu jest położony na osi dalej niż drugi, wykonujemy analogiczne operacje, porównujac najdalej wysunięty punkt drugiej bryły z początkowym punktem projekcji pierwszego. \\
-Teoretycznie istnieje nieskończenie wiele osi, które możemy sprawdzić. W praktyce wystarczy sprawdzić jedynie osie wzdłuż normalnych płaszczyzn, z których złożone są sprawdzane bryły oraz wzdłuż osi stworzonych z iloczynów wektorowych brzegów obiektów. 
+Teoretycznie istnieje nieskończenie wiele osi, które możemy sprawdzić. W praktyce wystarczy sprawdzić jedynie osie wzdłuż normalnych płaszczyzn, z których złożone są sprawdzane bryły oraz wzdłuż osi stworzonych z iloczynów wektorowych brzegów obiektów. Zostało to pokazane na rynunku (5.3). Dla przejrzystego zaprezentowania wszystkich sprawdzanych osi zostały użyte trójkąty.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/sat_test.png}
+\caption{Sprawdzane osie dla algorytmu SAT\protect\cite{sat_help}.}%
+\label{rys:Sprawdzane osie dla algorytmu SAT}
+\end{figure}
 
 \section{Iloczyn wektorowy}
-Wynikiem iloczynu wektorowego nowy wektor o kierunku prostopadłym do płaszczyzny utworzonej przez mnożone wektory o długości równej iloczynowi długości wektorów oraz sinusa kąta między nimi \cite{math1}. Zwrot utworzonego wektora wyznaczany jest regułą prawej ręki lub regułą śruby prawoskrętnej.Kolejność mnożenia odgrywa tu niemałe znaczenie,ponieważ wynik iloczynu wektorowego AxB nie równa się BxA.
+Wynikiem iloczynu wektorowego nowy wektor o kierunku prostopadłym do płaszczyzny utworzonej przez mnożone wektory o długości równej iloczynowi długości wektorów oraz sinusa kąta między nimi \cite{math1}. Zwrot utworzonego wektora wyznaczany jest regułą prawej ręki lub regułą śruby prawoskrętnej. Kolejność mnożenia odgrywa tu niemałe znaczenie, ponieważ wynik iloczynu wektorowego AxB nie równa się BxA.
 Wartość iloczynu wektorowego zdefiniowana jest następujacym wzorem: \\
 \begin{equation}\|\vec{a}\times\vec{b}\|=\|\vec{a}\|\bullet|\vec{b}\|\bullet\sin\gamma\end{equation}
 Produkt iloczynu skalarnego wektorów a i b ma postać: \\

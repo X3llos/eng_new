@@ -98,35 +98,20 @@ int main()
     boxes2[i]->SetLengths(0.5f,0.5f,0.5f);
     boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
     boxes2[i]->isActive = true;
-    if(i%3 == 0)
+    if(i%2 == 0)
       {
         boxes2[i]->SetAngularVelocity(0.0f,0.0f,0.0f);
-        boxes2[i]->SetCenter(3.0f,i*2.0f,-3.0f);
+        boxes2[i]->SetCenter(0.0f,i*2.0f,0.0f);
         boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
       }
     else
       {
         boxes2[i]->AddAngularForce(0.0f,0.0f,0.0f);
-        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f));
+        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(30.0f));
       }
     boxes2[i]->SetWeight(2.0f);
     }
   for(int i=1;i< numBoxes;i++)
-    {
-      switch(i%10)
-        {
-        case 0: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 1: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 2: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 3: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 4: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 5: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 6: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 7: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 8: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        case 9: boxes2[i]->SetCenter(-10.0f +(i%10)*2.0f,(i/10)*2.0f,-10.0f +(i%10)*2.0f); break;
-        }
-    }
   Renderer::GetInstance().Init();
   Solver::GetInstance().Init();
   double previous_seconds = 0;

@@ -17,7 +17,7 @@ int Solver::Init()
   program = NULL;
   kernel = NULL;
   wasText = false;
-  fileName = const_cast<char*>("./calcPhys.cl");
+  fileName = const_cast<char*>("./Phys.cl");
   fp = fopen(fileName, "r");
   if (!fp)
   {
@@ -141,7 +141,7 @@ void Solver::UpdateVelocity(Body* obj, double &timeStep)
 {
   // add gravity and airdrag
   float* vel = obj->GetVelocity();
-  vel[1] += obj->GetWeight()*(-9.81)*timeStep*0.1; // added gravity
+  vel[1] += obj->GetWeight()*(-9.81)*timeStep; // added gravity
 
 
   // Set new velocity
@@ -165,7 +165,8 @@ void Solver::UpdateAngularVelocity(Body* obj, double &timeStep)
   angVel[0] *= AIRDRAG;
   angVel[1] *= AIRDRAG;
   angVel[2] *= AIRDRAG;
-  obj->SetAngularVelocity(angVel[0]*timeStep,angVel[1]*timeStep,angVel[2]*timeStep);
+  //obj->SetAngularVelocity(angVel[0]*timeStep,angVel[1]*timeStep,angVel[2]*timeStep);
+  obj->SetAngularVelocity(angVel[0],angVel[1],angVel[2]);
 }
 
 int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)

@@ -1,21 +1,21 @@
 \chapter{Dynamika bryły sztywnej}
 \section{Bryła sztywna}
-Bryła sztywna inaczej ciało sztywne jest to obiekt, w którym poszczególne punkty (np. cząsteczki) pozostają w stałych odległościach od siebie. Ciało sztywne nie zmienia swojego kształtu oraz posiada stałą gęstość.\\
+Bryła sztywna inaczej ciało sztywne jest to obiekt, w którym poszczególne punkty (np.~cząsteczki) pozostają w stałych odległościach od siebie. Ciało sztywne nie zmienia swojego kształtu oraz posiada stałą gęstość.\\
 Opisując dynamikę bryły sztywnej należy zwrócić uwagę na dwa rodzaje ruchu.
 \subsection{Ruch postępowy}
-Każdy odcinek łączący dwa dowolne punkty ciała bryły będzie równoległy do odcinka łączącego te same dwa punkty, ale w poprzednim położeniu. Wszystkie punkty bryły poruszają się w danym momencie z jednakową prędkością liniową a podczas ruchu jednostajnie zmiennego będą miały również takie samo przyspieszenie. Dlatego też ruch postępowy dla bryły sztywnej jest identyczny jak dla ruchu punktu materialnego
+Każdy odcinek łączący dwa dowolne punkty ciała bryły będzie równoległy do odcinka łączącego te same dwa punkty, ale w poprzednim położeniu. Wszystkie punkty bryły poruszają się w danym momencie z jednakową prędkością liniową a podczas ruchu jednostajnie zmiennego będą miały również takie samo przyspieszenie. Dlatego też ruch postępowy dla~bryły sztywnej jest identyczny jak dla ruchu punktu materialnego
 \subsection{Ruch obrotowy}
 Wszystkie punkty bryły sztywnej, za wyjątkiem tych leżących na osi obrotu, poruszają się po okręgach o promieniu równym \verb$r$, równych odległości punktów od osi obrotu. Prędkość kątowa bryły będzie wynosić\begin{equation}\omega=\frac{v_i}{r_i}\end{equation}
 gdzie \verb$v$ to prędkość liniowa. Zatem energię kinetyczną ciała można obliczyć z zależności:
-\begin{equation}E_i=\frac{1}{2}mr^2\omega^2\end{equation}
-Całkowita energia kinetyczna bryły w tym ruchu jest równa sumie energii kinetycznych jej poszczególnych punktów. Z definicji bryły sztywnej wynika, że w tym ruchu wszystkie punkty będą miały taka samą prędkość kątową . Tak więc całkowitą energię kinetyczną bryły można przedstawić w postaci wzoru:
-\begin{equation}E_c=\frac{1}{2}(\sum m_i r_i^2)\omega^2\end{equation}
+\begin{equation}E_i=\frac{1}{2}mr_i^2\omega_i^2\end{equation}
+Całkowita energia kinetyczna bryły w tym ruchu jest równa sumie energii kinetycznych jej poszczególnych punktów. Z definicji bryły sztywnej wynika, że w tym ruchu wszystkie punkty będą miały taka samą prędkość kątową. Tak więc całkowitą energię kinetyczną bryły można przedstawić w postaci wzoru:
+\begin{equation}E_c=\frac{1}{2}(\sum_i^nm_ir_i^2)\omega^2\end{equation}
 Iloczyny \begin{equation}m_i r_i\end{equation} pochodzą od poszczególnych punktów ciała. Sumę tych iloczynów nazywa się momentem bezwładności \verb$I$ bryły sztywnej względem osi obrotu.
 \begin{equation}I=\sum_i^n m_i r_i^2\end{equation}
-Moment bezwładności bryły zależy nie tylko od osi obrotu, ale także od kształtu i rozkładu gęstości ciała, wyrażanej w $kg * {m}^{3}$
+Moment bezwładności bryły zależy nie tylko od osi obrotu, ale także od kształtu i rozkładu gęstości ciała, wyrażanej w $kg/{m}^{3}$
 W zależności od rodzaju bryły, moment bezwładności występuje pod inną postacią. Dla sześcianu wynosi ona $I=\frac{ms^2}{6}$, gdzie \verb$m$ oznacza masę a \verb$s$ długość krawędzi. Dla kuli będzie to wartość $I=\frac{2mr^2}{5}$ gdzie \verb$m$ oznacza masę a \verb$r$ promień kuli\cite{wiki2}.
 
-Jeżeli bryła sztywna wykonuje ruch obrotowy z przyspieszeniem kątowym, to dzieje się tak pod wpływem przyłożonej siły. Jeżeli siła F działa na punkt materialny bryły sztywnej to jej działanie automatycznie przenosi się na całą bryłę. Mówi się nie o samej sile, ale o tzw. momencie siły. Można go obliczyć ze wzoru:
+Jeżeli bryła sztywna wykonuje ruch obrotowy z przyspieszeniem kątowym, to dzieje się tak pod wpływem przyłożonej siły. Jeżeli siła F działa na punkt materialny bryły sztywnej to jej działanie automatycznie przenosi się na całą bryłę. Mówi się nie o samej sile, ale o~tzw. momencie siły. Można go obliczyć ze wzoru:
 \begin{equation}\tau=rF\sin\alpha\end{equation}
 gdzie r jest odległością punktu przyłożenia siły od osi obrotu, a kąt alfa zawarty jest między prostą łączącą punkt przyłożenia siły z osią obrotu i wektorem siły F.\\
 Zarówno dla ruchu postępowego jak i ruchu obrotowego obowiązują zasady dynamiki Newtona.
@@ -24,9 +24,65 @@ Zarówno dla ruchu postępowego jak i ruchu obrotowego obowiązują zasady dynam
 ,,W inercjalnym układzie odniesienia, jeśli na ciało nie działa żadna siła lub siły działające równoważą się, to ciało pozostaje w spoczynku lub porusza się ruchem jednostajnym prostoliniowym.''\cite{wiki3}\\ 
 W odniesieniu do ruchu obrotowego pierwsza zasada dotyczy sytuacji kiedy bryła sztywna nie porusza się lub ma stałą prędkość kątową. Wtedy to wypadkowy moment sił względem danej osi obrotu, działających na ciało jest równy zero.
 \subsection{II zasada dynamiki}
-,,Jeśli siły działające na ciało nie równoważą się (czyli wypadkowa sił $\vec{F}_{w}$ jest różna od zera), to ciało porusza się z przyspieszeniem wprost proporcjonalnym do siły wypadkowej, a odwrotnie proporcjonalnym do masy ciała.''\cite{wiki3}\\
+,,Jeśli siły działające na ciało nie równoważą się (czyli wypadkowa sił $\vec{F}_{w}$ jest różna od~zera), to ciało porusza się z przyspieszeniem wprost proporcjonalnym do siły wypadkowej, a~odwrotnie proporcjonalnym do masy ciała.''\cite{wiki3}\\
 Powyższą zasadę można wyrazić wzorem
 \begin{equation}\vec{a}=\frac{\vec{F_w}}{m}\end{equation}
 gdzie $F_w$ oznacza wypadkową sił. Kierunek i zwrot przyspieszenia jest zgodny z kierunkiem i zwrotem siły. 
-Stosując drugą zasadę dynamiki do ruchu obrotowego można wywnioskować, że jeśli bryła sztywna poddana jest działaniu stałego momentu sił to porusza się ona z przyspieszeniem kątowym wprost proporcjonalnym do tego momentu sił co do wartości i odwrotnie proporcjonalnym do momentu bezwładności.
+Stosując drugą zasadę dynamiki do ruchu obrotowego można wywnioskować, że jeśli bryła sztywna poddana jest działaniu stałego momentu sił to porusza się ona z~przyspieszeniem kątowym wprost proporcjonalnym do tego momentu sił co do wartości i~odwrotnie proporcjonalnym do momentu bezwładności.
 
+\section{Równania ruchu}
+Ruch jednostajny można wyznaczyć przez przekształcenie definicji szybkości ruchu:
+\begin{equation}V=\frac{\Delta x}{\Delta t}\end{equation}
+Mnożąc strony równania przez $\Delta t$ równanie przyjmuje postać \begin{equation}\Delta x=V\Delta t\end{equation}
+gdzie $\Delta x$ określa przebytą drogę, \verb$V$ - szybkość w ruchu jednostajnym a $\Delta t$ czas ruchu. Rysując wykres prędkości od czasu można zauważyć, że pole pod wykresem możemy obliczyć mnożąc długość (aktualną wartość prędkości) przez wysokość (aktualną wartość czasu). Zatem wzór na obliczenie pola pod wykresem jak i wzór na drogę w tym ruchu jest identyczny.\\
+Przy ruchu jednostajnie zmiennym prostoliniowym należy odpowiednio przekształcić definicję przyspieszenia:
+\begin{equation}a=\frac{V_2 - V_1}{\Delta t}\end{equation} gdzie \verb$a$ określa przyspieszenie, $V_2$ prędkość końcową, $V_1$ prędkość początkową a $\Delta t$ czas trwania ruchu. Należy przekształcić równanie do uzyskania wzoru na prędkość końcową:
+\begin{equation}V_2=V_1+a\Delta t\end{equation}
+Rysując wykres prędkości od czasu dla takiego rodzaju ruchu przy obliczeniu pola pod wykresem powstaje wzór (4.12).
+\begin{equation}P = \frac{1}{2}V_2\Delta t\end{equation}
+Pamiętając o zależności między polem pod wykresem a przebytą drogą, możliwe jest przekształcenie wzoru do postaci (4.13). \begin{equation}\Delta x = \frac{1}{2}V_2\Delta t\end{equation}
+Dodatkowo przy założeniu początkowej prędkości równej 0 i zmieniając wartość $V_2$ zgodnie z równaniem (4.11) otrzymamy postać \begin{equation}\Delta x = \frac{1}{2}a\Delta t^2\end{equation}
+Wyprowadzone równanie pokazuje możliwe obliczenie przebytej drogi bez znajomości szybkości końcowej przy jednocześnie znanej informacji o przyspieszeniu i czasie trwania ruchu. Jeśli jednak prędkość początkowa będzie różna od 0, należy zsumować wartości pól pod wykresami, w wyniku czego otrzymany zostaje wzór (4.15). \begin{equation}\Delta x =V_1\Delta t + \frac{1}{2}V_2\Delta t - \frac{1}{2}V_1\Delta t\end{equation}
+Redukując wyrazy podobne w rezultacie powstaje równanie
+\begin{equation}\Delta x =\frac{1}{2}V_1\Delta t + \frac{1}{2}V_2\Delta t\end{equation}
+Wyłączając przed nawias części wspólne wzór prezentuje się następujaco
+\begin{equation}\Delta x = \frac{1}{2}(V_1\Delta t + V_2)\Delta t\end{equation}
+Podstawiając równanie (4.11) do otrzymanego wzoru oraz dodaniu wyrazów podobnych otrzymane zostaje ostatnie przekształcenie wzoru do postaci
+\begin{equation}\Delta x =V_1\Delta t+\frac{1}{2}a\Delta t^2\end{equation}
+Podsumowując, wyprowadzone równania (4.11), (4.17) oraz (4.18) umożliwiają rozwiązanie większości zadań dotyczących ruchu.
+\section{Całkowanie równań ruchu}
+W ogólnym przypadku równanie ruchu może wyglądać następujaco:
+\begin{equation}m\frac{d^2\vec r(t)}{dt^2}=\vec F(t)\end{equation} gdzie \verb$m$ oznacza masę, \verb$r$ wektor wodzący\footnote{Wektor wodzący - dla danego punktu A jest to wektor zaczepiony w początku ukłdu współrzednych i~o końcu w punkcie A\cite{wiki4}} a \verb$F$ całkowitą siłę działającą na obiekt. Równoważnym zapisem równania (4.19) jest układ dwóch równań różniczkowych zwyczajnych pierwszego stopnia:
+\begin{equation}\frac{d\vec r(t)}{dt}=\vec v(t)\end{equation}
+\begin{equation}m\frac{d\vec v(t)}{dt}=\vec F(t)\end{equation}
+Wykorzystując algorytm Eulera oraz korzystając z definicji pochodnej jako ilorazu różnicowago, możliwe jest zapisanie równań (4.20) oraz (4.21) w postaci:
+\begin{equation}v(t)=\lim_{h \to 0}\frac{x(t+h) - x(t)}{h}\end{equation}
+\begin{equation}F(t)=m\lim_{h \to 0}\frac{v(t+h) - v(t)}{h}\end{equation}
+gdzie dla uproszczenia zapisu rozpatrywany jest przypadek jednowymiarowy: $x(t) \equiv \vec r(t),$\newline$v(t) \equiv \vec v(t)$. Dodatkowo przy założeniu, że wartość h ma pewną skończoną małą wartość, powyższe wzory można przedstawić jako:
+\begin{equation}v(t)\approx\frac{x(t+h) - x(t)}{h}\end{equation}
+\begin{equation}F(t)\approx m\frac{v(t+h) - v(t)}{h}\end{equation}
+Stąd rozwiązując oba równania ze względu na \verb$x(t+h)$ oraz \verb$v(t+h)$ powstają równania:
+\begin{equation}x(t+h)\approx x(t)+v(t)h\end{equation}
+\begin{equation}v(t+h)\approx v(t)+\frac{F(t)}{m}h\end{equation}
+W stworzonej aplikacji zarówno dla CPU jak i GPU zostały wykorzystane równania (4.26) i~(4.27) odpowiednio dla obliczenia położenia obiektu w kolejnych krokach symulacji oraz dla obliczenia nowej wartości prędkości bryły.\\
+Dla wyznaczenia równania ruchu obrotowego konieczne jest przypomnienie następujących wzorów:
+\begin{itemize}
+\item na prędkość kątową: $\omega=\frac{\Delta\phi}{\Delta t}$,
+\item na przyspieszenie kątowe $\alpha=\frac{\Delta\omega}{\Delta t}$,
+\item na moment siły $M = I\alpha$,
+\item na moment pędu $L = I\omega$.
+\end{itemize}
+Dla ruchu obrotowego równanie ruchu ma postać:
+\begin{equation}M=\frac{\Delta L}{\Delta t}\end{equation}
+Pod wpływem działania momentu sił zewnętrznych równanie wygląda następująco:
+\begin{equation}M=\frac{\Delta L}{\Delta t}+\omega\times L\end{equation}
+Współczynnik bezwładości $I$ najlepiej określić w układzie osi, które związane są z obracającym się ciałem. Zakładając, że osie główne bryły pokrywają się z układem odniesienia, składowe wektora momentu siły wynoszą odpowiednio $M_1$, $M_2$, $M_3$ a momenu pędu $L_1$, $L_2$ oraz $L_3$ i~mogą być zapisane jako $L_1 = I_1\omega_1$, $L_2 = I_2\omega_2$, $L_3 = I_3\omega_3$.
+Przyjmując te założenia, można zapisać równanie (4.29) w postaci trzech równań skalarnych:
+\begin{equation}M_1=\frac{\Delta L_1}{\Delta t}+(\omega_2L_3 - \omega_3L_2)\end{equation}
+\begin{equation}M_2=\frac{\Delta L_2}{\Delta t}+(\omega_3L_1 - \omega_1L_3)\end{equation}
+\begin{equation}M_3=\frac{\Delta L_3}{\Delta t}+(\omega_1L_2 - \omega_2L_1)\end{equation}
+Wykorzystując rozdzielone równania momentu pędu, powyższe równania przyjmują następującą postać:
+\begin{equation}M_1=I_1\frac{\Delta\omega_1}{\Delta t}+\omega_2\omega_3(I_3 - I_2)\end{equation}
+\begin{equation}M_2=I_2\frac{\Delta\omega_2}{\Delta t}+\omega_1\omega_3(I_1 - I_3)\end{equation}
+\begin{equation}M_3=I_3\frac{\Delta\omega_3}{\Delta t}+\omega_2\omega_1(I_2 - I_1)\end{equation}
+Równania (4.33), (4.34), (4.35) stanowią układ skalarnych równań Eulera do rozwiązywania zagadnień wykorzystujacych ruch obrotowy.

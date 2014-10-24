@@ -1,0 +1,8 @@
+\chapter*{Streszczenie angielskie}
+\section*{Aim}
+The purpose of this thesis is to create rigid body simulation using OpenCL framework to accelerate calculations, i.e. moving objects, finding collisions and responding to them. Moreover a simplified implementation of rendering using OpenGL will be created for~displaying the simulation.
+\section*{Assumptions}
+Thesis plan assumes usage of OpenCL at version 1.2 for boosting calculations, usage of~OpenGL at version 3.1 with additional library GLFW at version 3 for rendering. The base program will be written in C++.\\
+Simulation will take place in a space with gravity set at 9.81$m \over s_2$ value and a substructure with mass close to infinity (m = $\infty$) that is unaffected by gravity.
+\section*{Results and conclusions}
+After implementation of application was completed, a series of test was run. The tests showed that although simulation was running faster on CPU with up to 10 bodies, using more object showed that GPU finished calculations for them faster than CPU. This is possible thanks to parallel processing many (if not all) calculations for rigid bodies. Another positive effect of using OpenCL is portability and possibility to move a computing solution to another hardware that supports the technology. With that aspect even bugdet GPU devices can be used and boost physical or mathematical calculations.
