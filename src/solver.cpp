@@ -179,7 +179,7 @@ int Solver::UpdateCPU(double timeStep,std::vector<Body*> bodies, int first)
       float* angForce = bodies[i]->GetAngularForce();
       if (angForce[0] != 0.0f || angForce[1] != 0.0f || angForce[2] != 0.0f)
       {
-        UpdateAngularVelocity(bodies[i], timeStep);
+        //UpdateAngularVelocity(bodies[i], timeStep);
       }
     }
   }

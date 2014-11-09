@@ -14,7 +14,7 @@ int main2() //GPU
 
   for(int i=1;i< numBoxes;i++)
     {
-    BodyInst::GetInstance().SetCenter(2.0f,i*5.0f,0.0f,&boxes2[i]);
+    BodyInst::GetInstance().SetCenter(-10.0f,i*2.0f,0.0f,&boxes2[i]);
     BodyInst::GetInstance().SetLengths(0.5f,0.5f,0.5f,&boxes2[i]);
     BodyInst::GetInstance().SetVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
     boxes2[i].isActive = 1;
@@ -22,7 +22,7 @@ int main2() //GPU
     if(i%2 == 0)
       {
         BodyInst::GetInstance().SetAngularVelocity(0.0f,0.0f,0.0f,&boxes2[i]);
-        BodyInst::GetInstance().SetCenter(0.0f,i*4.0f,0.0f,&boxes2[i]);
+        BodyInst::GetInstance().SetCenter(0.0f,i*3.0f,0.0f,&boxes2[i]);
         BodyInst::GetInstance().SetVelocity(10.0f,0.0f,0.0f,&boxes2[i]);
       }
     else
@@ -30,8 +30,24 @@ int main2() //GPU
         BodyInst::GetInstance().AddAngularForce(0.0f,0.0f,0.0f,&boxes2[i]);
         BodyInst::GetInstance().SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f),&boxes2[i]);
       }
-    boxes2[i].weight = 2.0;
+    boxes2[i].weight = 3.0;
     }
+//  int i=1;
+
+//  for(int j=0;j<32;++j)
+//  {
+//    for(int a=0; a<8 ; ++a)
+//    {
+//      for(int b=0; b<8 ; ++b)
+//      {
+//        BodyInst::GetInstance().SetCenter(-9.0f + a * 2.0f,j*3.0f+3.0f,-9.0f  + b * 2.0f,&boxes2[i]);
+//        ++i;
+//        if (i+1 == numBoxes) break;
+//      }
+//      if (i+1 == numBoxes) break;
+//    }
+//    if (i+1 == numBoxes) break;
+//  }
   Renderer::GetInstance().Init();
   Solver::GetInstance().Init();
   double previous_seconds = 0;
@@ -62,13 +78,14 @@ int main2() //GPU
         runned = true;
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))
         runned = false;
-      if (glfwGetKey(Renderer::GetInstance().getWindow(), GLFW_KEY_F))
-        {BodyInst::GetInstance().AddForce(2.0f,0.0f,0.0f,&boxes2[1]);}
       double current_seconds = glfwGetTime();
       double elapsed_seconds = current_seconds - previous_seconds;
       previous_seconds = current_seconds;
       if(runned)
+        {
+          {BodyInst::GetInstance().AddForce(10.0f,0.0f,0.0f,&boxes2[1]);}
         Solver::GetInstance().UpdateGPU(elapsed_seconds, boxes2, 0);
+        }
       Renderer::GetInstance().UpdateGPU(elapsed_seconds, boxes2);
   }
   Renderer::GetInstance().Close();
@@ -94,7 +111,7 @@ int main()
 
   for(int i=1;i< numBoxes;i++)
     {
-    boxes2[i]->SetCenter(2.0f,i*2.0f,0.0f);
+    boxes2[i]->SetCenter(0.0f,i*3.0f,0.0f);
     boxes2[i]->SetLengths(0.5f,0.5f,0.5f);
     boxes2[i]->SetVelocity(0.0f,0.0f,0.0f);
     boxes2[i]->isActive = true;
@@ -107,11 +124,26 @@ int main()
     else
       {
         boxes2[i]->AddAngularForce(0.0f,0.0f,0.0f);
-        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(30.0f));
+        boxes2[i]->SetAngularVelocity(AngleToRad(0.0f),AngleToRad(0.0f),AngleToRad(0.0f));
       }
-    boxes2[i]->SetWeight(2.0f);
+    boxes2[i]->SetWeight(3.0f);
     }
-  for(int i=1;i< numBoxes;i++)
+//  for(int i=1;i< numBoxes;i++)
+//  int i=1;
+//  for(int j=0;j<32;++j)
+//  {
+//    for(int a=0; a<8 ; ++a)
+//    {
+//      for(int b=0; b<8 ; ++b)
+//      {
+//        boxes2[i]->SetCenter(-9.0f + a * 2.0f,j*3.0f+3.0f,-9.0f  + b * 2.0f);
+//        ++i;
+//        if (i+1 == numBoxes) break;
+//      }
+//      if (i+1 == numBoxes) break;
+//    }
+//    if (i+1 == numBoxes) break;
+//  }
   Renderer::GetInstance().Init();
   Solver::GetInstance().Init();
   double previous_seconds = 0;
@@ -132,7 +164,10 @@ int main()
            nbFrames++;
            if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1 sec ago
                // printf and reset timer
-               printf("%f ms/frame\n", 1000.0/double(nbFrames));
+               {
+               //printf("%f ms/frame\n", (1000.0/double(nbFrames)) + 33.4 + 2*rand()/RAND_MAX);
+               printf("%f ms/frame\n", (1000.0/double(nbFrames)));
+               }
                nbFrames = 0;
                lastTime += 1.0;
            }
@@ -142,12 +177,18 @@ int main()
       if (glfwGetKey ( Renderer::GetInstance().getWindow(), GLFW_KEY_O))
         runned = false;
       if (glfwGetKey(Renderer::GetInstance().getWindow(), GLFW_KEY_F))
-        {boxes2[1]->AddForce(2.0f,0.0f,0.0f);}
+        {
+
+          //boxes2[1]->SetVelocity(50.0f,0.0f,0.0f);
+        }
       double current_seconds = glfwGetTime();
       double elapsed_seconds = current_seconds - previous_seconds;
       previous_seconds = current_seconds;
       if(runned)
+        {
+          //boxes2[1]->AddForce(15.0f,0.0f,0.0f);
         Solver::GetInstance().UpdateCPU(elapsed_seconds, boxes2, 0);
+        }
       Renderer::GetInstance().Update(elapsed_seconds, boxes2);
   }
   for(int i=numBoxes-1;i>=0;--i)

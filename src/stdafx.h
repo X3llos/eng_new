@@ -6,7 +6,7 @@
 #define HEIGHT (480)
 #define numBoxes 2
 
-#define AIRDRAG 0.9
+#define AIRDRAG 0.98
 
 #include <iostream>
 #include <stdlib.h>
